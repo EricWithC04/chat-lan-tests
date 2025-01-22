@@ -61,12 +61,31 @@
     justify-content: space-between;
 }
 
+.messages-input form {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
 .messages-input form input {
     margin-left: 25px;
+    height: 80%;
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    padding-left: 18px;
+}
+
+.messages-input form input:focus {
+    background-color: #f5f5f5;
+    border-radius: 10px;
 }
 
 .messages-input form button {
     border: none;
     background: none;
     cursor: pointer;
+    margin-right: 25px;
 }

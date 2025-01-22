@@ -1,0 +1,44 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    background-color: #daeaff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    width: 24%;
+    height: 60%;
+    border-radius: 10px;
+    border: 2px solid #ccc5;
+    box-shadow: 0 3px 6px #4444;
+}
+
+.title {
+    margin: 7% 5%;
+    color: #2142AB;
+    font-size: 1.5rem
+}
+
+.profile-list {
+    margin: 0 5%;
+    overflow: auto;
+}
+
+::-webkit-scrollbar {
+    width: 5px
+}
+
+::-webkit-scrollbar-track {
+    background-color: #fff;
+    border-radius: 10px
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #a1a2a4;
+    border-radius: 10px
+}

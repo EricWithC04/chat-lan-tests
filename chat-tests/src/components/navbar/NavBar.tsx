@@ -9,9 +9,15 @@ export const NavBar = () => {
     return (
         <div className={styles.container}>
             <img src={exampleImage} alt="foto" />
-            <LuMessageCircleMore />
-            <GoGear />
-            <IoExitOutline />
+            <div className={styles["icon-container"]}>
+                <LuMessageCircleMore size={30} className={styles["icon"]} />
+            </div>
+            <div className={styles["icon-container"]}>
+                <GoGear size={30} className={styles["icon"]} />
+            </div>
+            <div className={`${styles["icon-container"]} ${styles.logout}`}>
+                <IoExitOutline size={30} className={styles["icon"]} />
+            </div>
         </div>
     )
 }

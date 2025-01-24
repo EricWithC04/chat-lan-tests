@@ -7,7 +7,7 @@
 }
 
 .navbar {
-    width: 6%;
+    width: 8%;
     height: 100%;
     background-color: #004173;
 }
@@ -16,6 +16,8 @@
     width: 28%;
     height: 100%;
     background-color: #0979B0;
+    border-left: 2px solid #c5c5c58f;
+    border-right: 2px solid #c5c5c58f;
 }
 
 .chat-container {

@@ -1,0 +1,10 @@
+[
+    { "idUser": 1, "idChat": 1 },
+    { "idUser": 2, "idChat": 1 },
+    { "idUser": 1, "idChat": 2 },
+    { "idUser": 3, "idChat": 2 },
+    { "idUser": 1, "idChat": 3 },
+    { "idUser": 4, "idChat": 3 },
+    { "idUser": 1, "idChat": 4 },
+    { "idUser": 5, "idChat": 4 }
+]

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { FaPaperPlane } from 'react-icons/fa'
 import styles from './ChatPage.module.css'
 import exampleImage from '../../assets/profile-example.jpg'
@@ -11,11 +11,23 @@ interface Message {
 
 export const ChatPage = () => {
 
-    const [messages, setMessages] = useState<Array<Message>>([])
+    const [messages, setMessages] = useState<Array<Message>>([
+        { msg: 'hola', user: 1 }, 
+        { msg: 'hola', user: 2 },
+    ])
+    const [newMessage, setNewMessage] = useState('')
 
-    useEffect(() => {
-        setMessages(prev => [...prev, { msg: 'hola', user: 1 }])
-    }, [])
+    const handleSubmitMessage = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        if (newMessage.length > 0) {
+            setMessages(prev => [...prev, { msg: newMessage, user: 1 }])
+            setNewMessage('')
+        }
+    }
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewMessage(e.target.value)
+    }
 
     return (
         <div className={styles.container}>
@@ -34,8 +46,13 @@ export const ChatPage = () => {
                     }
                 </div>
                 <div className={styles["messages-input"]}>
-                    <form>
-                        <input type="text" placeholder='Escribe un mensaje ...'/>
+                    <form onSubmit={handleSubmitMessage}>
+                        <input 
+                            type="text" 
+                            placeholder='Escribe un mensaje ...' 
+                            onChange={handleInputChange} 
+                            value={newMessage}
+                        />
                         <button type="submit"><FaPaperPlane color='#0979b0'/></button>
                     </form>
                 </div>

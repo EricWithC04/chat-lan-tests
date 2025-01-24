@@ -3,13 +3,27 @@ import { FaPaperPlane } from 'react-icons/fa'
 import styles from './ChatPage.module.css'
 import exampleImage from '../../assets/profile-example.jpg'
 import { MessageElement } from '../../components/messageElement/MessageElement'
+import { ChatElement } from '../../components/chatElement/ChatElement'
 
 interface Message {
     msg: string,
     user: number
 }
 
+interface UserProfile {
+    name: string
+    msg: string
+    selected: boolean
+} 
+
 export const ChatPage = () => {
+
+    const [chatsProfiles, setChatsProfiles] = useState<Array<UserProfile>>([
+        { name: 'Alejandro', msg: 'Hola', selected: false },
+        { name: 'Miguel', msg: 'Hola', selected: true },
+        { name: 'Sara', msg: 'Hola', selected: false },
+        { name: 'Juán', msg: 'Hola', selected: false },
+    ])
 
     const [messages, setMessages] = useState<Array<Message>>([
         { msg: 'hola', user: 1 }, 
@@ -29,14 +43,37 @@ export const ChatPage = () => {
         setNewMessage(e.target.value)
     }
 
+    const handleSelectChat = (name: string) => {
+        const newChatsProfile: Array<UserProfile> = []
+        chatsProfiles.forEach(chat => {
+            if (chat.name === name) {
+                newChatsProfile.push({ ...chat, selected: true })
+            } else {
+                newChatsProfile.push({ ...chat, selected: false })
+            }
+        })
+        setChatsProfiles(newChatsProfile)
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.navbar}></div>
-            <div className={styles["chat-list"]}></div>
+            <div className={styles["chat-list"]}>
+                {
+                    chatsProfiles.map(chat => (
+                        <ChatElement 
+                            name={chat.name} 
+                            msg={chat.msg} 
+                            selected={chat.selected} 
+                            handleSelectChat={handleSelectChat}
+                        />
+                    ))
+                }
+            </div>
             <div className={styles["chat-container"]}>
                 <div className={styles["messages-header"]}>
                     <img src={exampleImage} alt="" />
-                    <h6>Juan Perez</h6>
+                    <h6>{chatsProfiles.find(chat => chat.selected)?.name}</h6>
                 </div>
                 <div className={styles["messages-container"]}>
                     {

@@ -5,6 +5,7 @@ import exampleImage from '../../assets/profile-example.jpg'
 import { MessageElement } from '../../components/messageElement/MessageElement'
 import { ChatElement } from '../../components/chatElement/ChatElement'
 import { useMessages } from './hook/useMessages'
+import { NavBar } from '../../components/navbar/NavBar'
 
 interface Message {
     msg: string,
@@ -67,7 +68,9 @@ export const ChatPage = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.navbar}></div>
+            <div className={styles.navbar}>
+                <NavBar />
+            </div>
             <div className={styles["chat-list"]}>
                 {
                     chatsProfiles.map(chat => (

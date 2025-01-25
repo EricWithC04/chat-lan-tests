@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { ProfileElement } from '../../components/profileElement/ProfileElement'
+import { FiPlusCircle } from "react-icons/fi";
 import styles from './profiles.module.css'
+import { CreateProfileModal } from '../../components/createProfileModal/createProfileModal';
 
 interface Profile {
     id: string
@@ -13,6 +15,7 @@ interface Profile {
 export const Profiles = () => {
 
     const [profiles, setProfiles] = useState<Array<Profile>>([])
+    const [showModal, setShowModal] = useState<boolean>(false)
 
     useEffect(() => {
         fetch('http://localhost:3500/profile')
@@ -23,8 +26,16 @@ export const Profiles = () => {
 
     return (
         <div className={styles.container}>
+            {
+                showModal ? (
+                    <CreateProfileModal />
+                ) : null
+            }
             <div className={styles["profile-container"]}>
-                <h4 className={styles.title}>Seleccionar Perfil</h4>
+                <div className={styles.header}>
+                    <h4 className={styles.title}>Seleccionar Perfil</h4>
+                    <FiPlusCircle size={30} className={styles["add-profile"]} onClick={() => setShowModal(true)}/>
+                </div>
                 <div className={styles["profile-list"]}>
                     {
                         profiles.map(profile => (

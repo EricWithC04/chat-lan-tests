@@ -22,6 +22,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
 .icon-container:hover {
@@ -34,4 +35,8 @@
 
 .logout {
     margin-top: auto;
+}
+
+.selected {
+    background-color: #0979b0 !important;
 }

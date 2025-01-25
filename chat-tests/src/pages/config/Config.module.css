@@ -1,0 +1,35 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+}
+
+.navbar {
+    width: 5.9%;
+    height: 100%;
+    background-color: #004173;
+}
+
+.info {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.info img {
+    height: 60%;
+}
+
+.info-text {
+    margin-left: 5%;
+}
+
+.info-text h4 {
+    font-size: 1.5rem;
+    margin-bottom: 20px
+}
+
+.info-text p {
+    max-width: 60%;
+    font-size: 1.2rem
+}

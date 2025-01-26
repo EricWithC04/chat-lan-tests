@@ -15,7 +15,7 @@ interface Profile {
 export const Profiles = () => {
 
     const [profiles, setProfiles] = useState<Array<Profile>>([])
-    const [showModal, setShowModal] = useState<boolean>(false)
+    const [isVisible, setIsVisible] = useState<boolean>(false)
 
     useEffect(() => {
         fetch('http://localhost:3500/profile')
@@ -24,23 +24,23 @@ export const Profiles = () => {
             .catch(err => console.log(err))
     }, [])
 
+    const handleOpenModal = () => {
+        setIsVisible(true)
+    }
+
     const handleCloseModal = () => {
-        setShowModal(false)
+        setIsVisible(false)
     }
 
     return (
         <div className={styles.container}>
-            {
-                showModal ? (
-                    <div className={styles["modal-container"]}>
-                        <CreateProfileModal handleCloseModal={handleCloseModal} />
-                    </div>
-                ) : null
-            }
+            <div className={`${styles["modal-container"]} ${isVisible ? styles["fade-in"] : styles["fade-out"]}`}>
+                <CreateProfileModal handleCloseModal={handleCloseModal} isVisible={isVisible} />
+            </div>
             <div className={styles["profile-container"]}>
                 <div className={styles.header}>
                     <h4 className={styles.title}>Seleccionar Perfil</h4>
-                    <FiPlusCircle size={30} className={styles["add-profile"]} onClick={() => setShowModal(true)}/>
+                    <FiPlusCircle size={30} className={styles["add-profile"]} onClick={handleOpenModal}/>
                 </div>
                 <div className={styles["profile-list"]}>
                     {

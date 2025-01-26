@@ -5,7 +5,20 @@
     width: 30%;
     background-color: #d5d5d5;
     border: 1px solid #2143f356;
-    border-radius: 10px
+    border-radius: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.container.fade-in {
+    opacity: 1;
+    visibility: visible;
+}
+
+.container.fade-out {
+    opacity: 0;
+    visibility: hidden;
 }
 
 .container label,
@@ -31,7 +44,7 @@
 .container input:focus {
     outline: none;
     border: 1px solid #888;
-    box-shadow: 0 0 0 3px #8886; 
+    box-shadow: 0 0 0 3px #8886;
 }
 
 .container label {

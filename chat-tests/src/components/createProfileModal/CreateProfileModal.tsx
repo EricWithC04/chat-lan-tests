@@ -4,6 +4,7 @@ import { IoIosClose } from "react-icons/io";
 
 interface CreateProfileModalProps {
     handleCloseModal: () => void
+    isVisible: boolean
 }
 
 interface CreateProfileData {
@@ -11,7 +12,7 @@ interface CreateProfileData {
     img: string | null
 }
 
-export const CreateProfileModal = ({ handleCloseModal }: CreateProfileModalProps) => {
+export const CreateProfileModal = ({ handleCloseModal, isVisible }: CreateProfileModalProps) => {
 
     const [data, setData] = useState<CreateProfileData>({
         name: '',
@@ -44,7 +45,11 @@ export const CreateProfileModal = ({ handleCloseModal }: CreateProfileModalProps
     }
 
     return (
-        <form className={styles.container} onSubmit={handleSubmit} onChange={handleChange}>
+        <form 
+            className={`${styles.container} ${isVisible ? styles["fade-in"] : styles["fade-out"]}`} 
+            onSubmit={handleSubmit} 
+            onChange={handleChange}
+        >
             <div className={styles.header}>
                 <h2>Agregar Nuevo Perfil</h2>
                 <IoIosClose size={30} className={styles["close-icon"]} onClick={handleCloseModal}/>

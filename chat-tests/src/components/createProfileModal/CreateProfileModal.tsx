@@ -12,29 +12,53 @@ interface CreateProfileData {
     img: string | null
 }
 
+interface ProfileFieldErrors {
+    name?: string
+    img?: string
+}
+
+const urlRegex = /^(https?:\/\/)?((([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})|localhost)(:\d+)?(\/[^\s]*)?$/;
+
 export const CreateProfileModal = ({ handleCloseModal, isVisible }: CreateProfileModalProps) => {
 
     const [data, setData] = useState<CreateProfileData>({
         name: '',
         img: null
     })
+    const [errors, setErrors] = useState<ProfileFieldErrors>({})
+
+    const validateErrors = (): ProfileFieldErrors => {
+        let error: ProfileFieldErrors = {}
+        if (data.name === '') error.name = 'El nombre es requerido'
+        else if (data.name.length <= 1) error.name = 'El nombre debe tener al menos 2 caracteres'
+        else if ((data.img !== null && data.img !== '') && !urlRegex.test(data.img)) error.img = 'La URL debe ser válida o dejár el campo en vacío'
+        setErrors(error)
+        return error
+    }
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        fetch('http://localhost:3500/profile', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(_res => {
-                handleCloseModal()
-                window.location.reload()
+        const validatedErrors = validateErrors()
+
+        if (Object.keys(validatedErrors).length === 0) {
+            fetch('http://localhost:3500/profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: data.name,
+                    img: data.img === '' ? null : data.img
+                })
             })
-            .catch(err => console.log(err))
+                .then(res => res.json())
+                .then(_res => {
+                    handleCloseModal()
+                    window.location.reload()
+                })
+                .catch(err => console.log(err))    
+        }
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLFormElement>) => {
@@ -56,8 +80,10 @@ export const CreateProfileModal = ({ handleCloseModal, isVisible }: CreateProfil
             </div>
             <label htmlFor="name">Nombre</label>
             <input name ="name" type="text" placeholder="Ingrese el nombre" />
+            { errors.name ? <p className={styles.error}>{errors.name}</p> : null }
             <label htmlFor="img">{"URL de la imagen (opcional)"}</label>
             <input name ="img" type="text" placeholder="https://ejemplo.com/imagen.jpg" />
+            { errors.img ? <p className={styles.error}>{errors.img}</p> : null }
             <button type="submit">Agregar Perfil</button>
         </form>
     )

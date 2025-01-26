@@ -7,6 +7,7 @@ export const getProfiles = async (_req: Request, res: Response) => {
 
         if (!profiles || profiles.length === 0) {
             res.status(404).send("No profiles found");
+            return
         }
 
         res.status(200).json(profiles);
@@ -17,9 +18,9 @@ export const getProfiles = async (_req: Request, res: Response) => {
 
 export const createProfiles = async (req: Request, res: Response) => {
     try {
-        const { name } = req.body;
+        const { name, img } = req.body;
 
-        const newProfile = await ProfileModel.create({ name });
+        const newProfile = await ProfileModel.create({ name, img });
 
         if (!newProfile) {
             res.status(400).send("Failed to create profile");

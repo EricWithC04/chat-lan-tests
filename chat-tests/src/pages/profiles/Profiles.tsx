@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { ProfileElement } from '../../components/profileElement/ProfileElement'
 import { FiPlusCircle } from "react-icons/fi";
 import styles from './profiles.module.css'
-import { CreateProfileModal } from '../../components/createProfileModal/createProfileModal';
+import { CreateProfileModal } from '../../components/createProfileModal/CreateProfileModal';
 
 interface Profile {
     id: string
@@ -24,11 +24,17 @@ export const Profiles = () => {
             .catch(err => console.log(err))
     }, [])
 
+    const handleCloseModal = () => {
+        setShowModal(false)
+    }
+
     return (
         <div className={styles.container}>
             {
                 showModal ? (
-                    <CreateProfileModal />
+                    <div className={styles["modal-container"]}>
+                        <CreateProfileModal handleCloseModal={handleCloseModal} />
+                    </div>
                 ) : null
             }
             <div className={styles["profile-container"]}>

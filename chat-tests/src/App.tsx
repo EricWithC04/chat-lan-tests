@@ -2,7 +2,7 @@
 import { Routes, Route } from "react-router-dom"
 import { Profiles } from "./pages/profiles/Profiles"
 import { ChatPage } from "./pages/chat/ChatPage"
-import { Config } from "./pages/config/config"
+import { Config } from "./pages/config/Config"
 
 function App() {
   return (

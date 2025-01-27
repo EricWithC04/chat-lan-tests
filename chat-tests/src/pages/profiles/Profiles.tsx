@@ -45,7 +45,7 @@ export const Profiles = () => {
                 <div className={styles["profile-list"]}>
                     {
                         profiles.map(profile => (
-                            <ProfileElement name={profile.name} img={profile.img} />
+                            <ProfileElement name={profile.name} img={profile.img} id={profile.id} />
                         ))
                     }
                 </div>

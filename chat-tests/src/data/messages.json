@@ -1,11 +1,11 @@
 [
     { "id": 1, "text": "Hola, soy Alejandro", "idChat": 1, "idUser": 2 },
-    { "id": 2, "text": "Hola", "idChat": 1, "idUser": 1 },
+    { "id": 2, "text": "Hola", "idChat": 1, "idUser": "4a6d0e08-1724-4aa5-985c-4edae66a3531" },
     { "id": 3, "text": "Hola, soy Miguel", "idChat": 2, "idUser": 3 },
-    { "id": 4, "text": "Hola", "idChat": 2, "idUser": 1 },
+    { "id": 4, "text": "Hola", "idChat": 2, "idUser": "4a6d0e08-1724-4aa5-985c-4edae66a3531" },
     { "id": 5, "text": "Hola, soy Sara", "idChat": 3, "idUser": 4 },
-    { "id": 6, "text": "Hola", "idChat": 3, "idUser": 1 },
+    { "id": 6, "text": "Hola", "idChat": 3, "idUser": "4a6d0e08-1724-4aa5-985c-4edae66a3531" },
     { "id": 6, "text": "Como que hola?, demasiado seco sos", "idChat": 3, "idUser": 4 },
     { "id": 7, "text": "Hola, soy Juán", "idChat": 4, "idUser": 5 },
-    { "id": 8, "text": "Hola", "idChat": 4, "idUser": 1 }
+    { "id": 8, "text": "Hola", "idChat": 4, "idUser": "4a6d0e08-1724-4aa5-985c-4edae66a3531" }
 ]

@@ -9,7 +9,7 @@ import { NavBar } from '../../components/navbar/NavBar'
 
 interface Message {
     msg: string,
-    user: number
+    user: number | string
 }
 
 interface UserProfile {
@@ -39,7 +39,7 @@ export const ChatPage = () => {
     const handleSubmitMessage = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (newMessage.length > 0) {
-            setMessages(prev => [...prev, { msg: newMessage, user: 1 }])
+            setMessages(prev => [...prev, { msg: newMessage, user: '4a6d0e08-1724-4aa5-985c-4edae66a3531' }])
             setNewMessage('')
         }
     }

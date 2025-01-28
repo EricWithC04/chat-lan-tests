@@ -4,7 +4,7 @@ import styles from './ChatPage.module.css'
 import exampleImage from '../../assets/profile-example.jpg'
 import { MessageElement } from '../../components/messageElement/MessageElement'
 import { ChatElement } from '../../components/chatElement/ChatElement'
-import { useMessages } from './hook/useMessages'
+import { filterChats, useMessages } from './hook/useMessages'
 import { NavBar } from '../../components/navbar/NavBar'
 
 interface Message {
@@ -26,7 +26,6 @@ export const ChatPage = () => {
         { id: 2, name: 'Miguel', msg: 'Hola', selected: true },
         { id: 3, name: 'Sara', msg: 'Hola', selected: false },
         { id: 4, name: 'Juán', msg: 'Hola', selected: false },
-        { id: 5, name: 'Prueba', msg: 'Hola', selected: false },
     ])
 
     const [messages, setMessages] = useState<Array<Message>>([
@@ -35,7 +34,7 @@ export const ChatPage = () => {
     ])
     const [newMessage, setNewMessage] = useState('')
 
-    const [selectedChat, setSelectedChat] = useState<number>(2)
+    const [selectedChat, setSelectedChat] = useState<number>(5)
 
     const handleSubmitMessage = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -65,6 +64,16 @@ export const ChatPage = () => {
     useEffect(() => {
         const chatMessages = useMessages(selectedChat)
         setMessages(chatMessages)
+        const chats: Array<UserProfile> = []
+        filterChats().forEach(chat => {
+            chats.push({
+                id: chat.id,
+                name: "Alejandro",
+                msg: 'Hola',
+                selected: true
+            })
+        })
+        setChatsProfiles(chats)
     }, [selectedChat])
 
     return (

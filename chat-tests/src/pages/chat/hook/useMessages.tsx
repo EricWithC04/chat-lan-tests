@@ -27,17 +27,20 @@ const mappedChats = (): Array<Chat> => {
             users: allUserChats.filter(userChat => userChat.idChat === chat.id)
         })
     })
-    // console.log(chats);
 
     return chats
-} 
+}
+
+export const filterChats = (): Array<Chat> => {
+    const chats = mappedChats().filter(chat => chat.users.some(user => user.idUser === localStorage.getItem("userId")))
+    return chats
+}
 
 export const useMessages = (idChat: string | number) => {
     const chatMessages: Array<Message> = []
     
-    const filteredChats: Array<Chat> = mappedChats().filter(chat => chat.users.some(user => user.idUser === localStorage.getItem("userId"))) 
+    const filteredChats: Array<Chat> = filterChats() 
     console.log(filteredChats);
-    
     
     allMessages.filter(message => filteredChats.some(chat => chat.id === message.idChat)).forEach(msg => {
         if (msg.idChat === idChat) {

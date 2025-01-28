@@ -26,6 +26,7 @@ export const ChatPage = () => {
         { id: 2, name: 'Miguel', msg: 'Hola', selected: true },
         { id: 3, name: 'Sara', msg: 'Hola', selected: false },
         { id: 4, name: 'Juán', msg: 'Hola', selected: false },
+        { id: 5, name: 'Prueba', msg: 'Hola', selected: false },
     ])
 
     const [messages, setMessages] = useState<Array<Message>>([
@@ -39,7 +40,7 @@ export const ChatPage = () => {
     const handleSubmitMessage = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (newMessage.length > 0) {
-            setMessages(prev => [...prev, { msg: newMessage, user: '4a6d0e08-1724-4aa5-985c-4edae66a3531' }])
+            setMessages(prev => [...prev, { msg: newMessage, user: localStorage.getItem("userId")! }])
             setNewMessage('')
         }
     }

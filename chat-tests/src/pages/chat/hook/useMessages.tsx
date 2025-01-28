@@ -1,15 +1,45 @@
 // import React from 'react'
-// import allChats from '../../../data/chat.json'
+import allChats from '../../../data/chat.json'
+import allUserChats from '../../../data/user_chat.json'
 import allMessages from '../../../data/messages.json'
 
 interface Message {
     msg: string,
-    user: number
+    user: string | number
 }
 
-export const useMessages = (idChat: number) => {
-    const chatMessages: Array<Message> = [] 
-    allMessages.forEach(msg => {
+interface UserChat {
+    idUser: any,
+    idChat: number
+}
+
+interface Chat {
+    id: number,
+    users: Array<UserChat>
+}
+
+const mappedChats = (): Array<Chat> => {
+    const chats: Array<Chat> = []
+
+    allChats.forEach(chat => {
+        chats.push({
+            id: chat.id,
+            users: allUserChats.filter(userChat => userChat.idChat === chat.id)
+        })
+    })
+    // console.log(chats);
+
+    return chats
+} 
+
+export const useMessages = (idChat: string | number) => {
+    const chatMessages: Array<Message> = []
+    
+    const filteredChats: Array<Chat> = mappedChats().filter(chat => chat.users.some(user => user.idUser === localStorage.getItem("userId"))) 
+    console.log(filteredChats);
+    
+    
+    allMessages.filter(message => filteredChats.some(chat => chat.id === message.idChat)).forEach(msg => {
         if (msg.idChat === idChat) {
             chatMessages.push({
                 msg: msg.text,
@@ -17,5 +47,6 @@ export const useMessages = (idChat: number) => {
             })
         }
     })
-    return chatMessages
+    if (chatMessages.some(message => message.user === localStorage.getItem("userId"))) return chatMessages
+    else return []
 }

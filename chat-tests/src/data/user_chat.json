@@ -1,10 +1,12 @@
 [
-    { "idUser": 1, "idChat": 1 },
+    { "idUser": "95685f1d-8f66-41ef-85c3-139161ad9ccb", "idChat": 1 },
     { "idUser": 2, "idChat": 1 },
-    { "idUser": 1, "idChat": 2 },
+    { "idUser": "95685f1d-8f66-41ef-85c3-139161ad9ccb", "idChat": 2 },
     { "idUser": 3, "idChat": 2 },
-    { "idUser": 1, "idChat": 3 },
+    { "idUser": "95685f1d-8f66-41ef-85c3-139161ad9ccb", "idChat": 3 },
     { "idUser": 4, "idChat": 3 },
-    { "idUser": 1, "idChat": 4 },
-    { "idUser": 5, "idChat": 4 }
+    { "idUser": "95685f1d-8f66-41ef-85c3-139161ad9ccb", "idChat": 4 },
+    { "idUser": 5, "idChat": 4 },
+    { "idUser": "0cb61ff4-1824-4113-8424-662e58bb6593", "idChat": 5 },
+    { "idUser": 2, "idChat": 5 }
 ]

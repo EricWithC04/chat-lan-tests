@@ -1,11 +1,13 @@
 [
     { "id": 1, "text": "Hola, soy Alejandro", "idChat": 1, "idUser": 2 },
-    { "id": 2, "text": "Hola", "idChat": 1, "idUser": "4a6d0e08-1724-4aa5-985c-4edae66a3531" },
+    { "id": 2, "text": "Hola", "idChat": 1, "idUser": "95685f1d-8f66-41ef-85c3-139161ad9ccb" },
     { "id": 3, "text": "Hola, soy Miguel", "idChat": 2, "idUser": 3 },
-    { "id": 4, "text": "Hola", "idChat": 2, "idUser": "4a6d0e08-1724-4aa5-985c-4edae66a3531" },
+    { "id": 4, "text": "Hola", "idChat": 2, "idUser": "95685f1d-8f66-41ef-85c3-139161ad9ccb" },
     { "id": 5, "text": "Hola, soy Sara", "idChat": 3, "idUser": 4 },
-    { "id": 6, "text": "Hola", "idChat": 3, "idUser": "4a6d0e08-1724-4aa5-985c-4edae66a3531" },
-    { "id": 6, "text": "Como que hola?, demasiado seco sos", "idChat": 3, "idUser": 4 },
-    { "id": 7, "text": "Hola, soy Juán", "idChat": 4, "idUser": 5 },
-    { "id": 8, "text": "Hola", "idChat": 4, "idUser": "4a6d0e08-1724-4aa5-985c-4edae66a3531" }
+    { "id": 6, "text": "Hola", "idChat": 3, "idUser": "95685f1d-8f66-41ef-85c3-139161ad9ccb" },
+    { "id": 7, "text": "Como que hola?, demasiado seco sos", "idChat": 3, "idUser": 4 },
+    { "id": 8, "text": "Hola, soy Juán", "idChat": 4, "idUser": 5 },
+    { "id": 9, "text": "Hola", "idChat": 4, "idUser": "95685f1d-8f66-41ef-85c3-139161ad9ccb" },
+    { "id": 10, "text": "Hola", "idChat": 5, "idUser": 2 },
+    { "id": 11, "text": "Hola", "idChat": 5, "idUser": "0cb61ff4-1824-4113-8424-662e58bb6593" }
 ]

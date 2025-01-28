@@ -15,6 +15,11 @@ export const NavBar = () => {
         if (path !== location.pathname) navigate(path)
     }
 
+    const handleLogout = () => {
+        localStorage.removeItem("userId")
+        navigate("/")
+    }
+
     return (
         <div className={styles.container}>
             <img src={exampleImage} alt="foto" />
@@ -30,7 +35,7 @@ export const NavBar = () => {
             >
                 <GoGear size={30} className={styles["icon"]} />
             </div>
-            <div className={`${styles["icon-container"]} ${styles.logout}`} onClick={() => navigate("/")}>
+            <div className={`${styles["icon-container"]} ${styles.logout}`} onClick={handleLogout}>
                 <IoExitOutline size={30} className={styles["icon"]} />
             </div>
         </div>

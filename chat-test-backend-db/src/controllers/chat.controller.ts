@@ -1,5 +1,12 @@
 import { Request, Response } from "express";
 import { ChatModel } from "../models/chat.model";
+import { assignProfiles } from "./profile_chat.controller";
+
+interface ChatM {
+    id: string
+    createdAt: string
+    updatedAt: string
+}
 
 export const getChats = async (_req: Request, res: Response) => {
     try {
@@ -16,17 +23,21 @@ export const getChats = async (_req: Request, res: Response) => {
     }
 }
 
-export const createChat = async (_req: Request, res: Response) => {
+export const createChat = async (req: Request, res: Response) => {
     try {
-        // const { name, img } = req.body;
+        const users: Array<{ id: string }> = req.body.users;
 
         const newChat = await ChatModel.create();
 
         if (!newChat) {
             res.status(400).send("Failed to create chat");
+            return
         }
 
-        res.status(201).json(newChat);
+        const result = await assignProfiles(users, (newChat as any).id);
+
+        if (result === "Created profile chats") res.status(201).json(newChat);
+        else res.status(400).json(result);
     } catch (err) {
         console.error(err);
     }

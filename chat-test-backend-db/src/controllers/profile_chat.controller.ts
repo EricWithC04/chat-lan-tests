@@ -16,7 +16,7 @@ export const getProfileChats = async (_req: Request, res: Response) => {
     }
 }
 
-export const createProfiles = async (_req: Request, res: Response) => {
+export const createProfileChats = async (_req: Request, res: Response) => {
     try {
         // const { name, img } = req.body;
 
@@ -30,4 +30,17 @@ export const createProfiles = async (_req: Request, res: Response) => {
     } catch (err) {
         console.error(err);
     }
+}
+
+export const assignProfiles = async (users: Array<{ id: string }>, idChat: string) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await ProfileChatTable.create({ userId: users[0].id, chatId: idChat });
+            await ProfileChatTable.create({ userId: users[1].id, chatId: idChat });
+            resolve("Created profile chats");
+        } catch (err) {
+            console.error(err);
+            reject(err)
+        }
+    })
 }

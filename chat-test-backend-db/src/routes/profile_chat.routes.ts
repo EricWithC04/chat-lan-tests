@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { getProfileChats, createProfiles } from "../controllers/profile_chat.controller";
+import { getProfileChats, createProfileChats } from "../controllers/profile_chat.controller";
 
 const profileChatRouter: Router = Router();
 
 profileChatRouter.get("/", getProfileChats)
-profileChatRouter.post("/", createProfiles)
+profileChatRouter.post("/", createProfileChats)
 
 export { profileChatRouter }

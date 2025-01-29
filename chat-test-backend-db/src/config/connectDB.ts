@@ -1,4 +1,4 @@
-import { sequelize } from "../config/db";
+import { sequelize } from "./relations";
 
 export const connectDB = async () => {
     try {

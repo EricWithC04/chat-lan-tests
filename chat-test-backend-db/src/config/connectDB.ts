@@ -4,7 +4,7 @@ export const connectDB = async () => {
     try {
 
         return new Promise((resolve, reject) => {
-            sequelize.sync({ alter: true })
+            sequelize.sync({  })
                 .then(() => {
                     console.log('Connection has been established successfully.');
                     resolve(true)

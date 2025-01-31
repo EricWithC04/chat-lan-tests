@@ -4,8 +4,10 @@ import { assignProfiles } from "./profile_chat.controller";
 import { MessageModel } from "../models/message.model";
 import { ProfileModel } from "../models/profile.model";
 
-export const getChats = async (_req: Request, res: Response) => {
+export const getChats = async (req: Request, res: Response) => {
     try {
+        const { idUser } = req.params;
+
         const chats = await ChatModel.findAll({
             include: [
                 {
@@ -14,10 +16,7 @@ export const getChats = async (_req: Request, res: Response) => {
                 },
                 {
                     model: ProfileModel,
-                    attributes: [ "id", "name", "img"],
-                    where: {
-                        local: false
-                    }
+                    attributes: [ "id", "name", "img"]
                 }
             ]
         });
@@ -27,7 +26,9 @@ export const getChats = async (_req: Request, res: Response) => {
             return
         }
 
-        res.status(200).json(chats);
+        const filteredChats = chats.filter((chat: any) => chat.Profiles.some((profile: any) => profile.id === idUser));
+
+        res.status(200).json(filteredChats);
     } catch (err) {
         console.error(err);
     }

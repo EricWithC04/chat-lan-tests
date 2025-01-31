@@ -4,8 +4,8 @@ import { getProfilesWithChats } from "../controllers/profile.controller";
 
 const chatRouter: Router = Router();
 
-chatRouter.get("/", getChats);
+chatRouter.get("/:idUser", getChats);
 chatRouter.post("/", createChat);
-chatRouter.get("/:idUser", getProfilesWithChats);
+// chatRouter.get("/:idUser", getProfilesWithChats);
 
 export { chatRouter }

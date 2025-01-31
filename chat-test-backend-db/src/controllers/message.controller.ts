@@ -16,11 +16,12 @@ export const getMessages = async (_req: Request, res: Response) => {
     }
 }
 
-export const createMessage = async (_req: Request, res: Response) => {
+export const createMessage = async (req: Request, res: Response) => {
     try {
-        // const { name, img } = req.body;
+        const { profileId, chatId } = req.params;
+        const { text } = req.body;
 
-        const newMessage = await MessageModel.create();
+        const newMessage = await MessageModel.create({ text, profileId, chatId });
 
         if (!newMessage) {
             res.status(400).send("Failed to create message");

@@ -1,16 +1,26 @@
 import { Request, Response } from "express";
 import { ChatModel } from "../models/chat.model";
 import { assignProfiles } from "./profile_chat.controller";
-
-interface ChatM {
-    id: string
-    createdAt: string
-    updatedAt: string
-}
+import { MessageModel } from "../models/message.model";
+import { ProfileModel } from "../models/profile.model";
 
 export const getChats = async (_req: Request, res: Response) => {
     try {
-        const chats = await ChatModel.findAll();
+        const chats = await ChatModel.findAll({
+            include: [
+                {
+                    model: MessageModel,
+                    attributes: [ "id", "text", "profileId"]
+                },
+                {
+                    model: ProfileModel,
+                    attributes: [ "id", "name", "img"],
+                    where: {
+                        local: false
+                    }
+                }
+            ]
+        });
 
         if (!chats || chats.length === 0) {
             res.status(404).send("No chats found");

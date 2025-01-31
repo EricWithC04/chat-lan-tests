@@ -16,5 +16,10 @@ export const ProfileModel = sequelize.define('Profile', {
     img: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    local: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     }
 })

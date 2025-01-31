@@ -5,10 +5,36 @@ import { ChatModel } from "../models/chat.model";
 
 export const getProfiles = async (_req: Request, res: Response) => {
     try {
-        const profiles = await ProfileModel.findAll();
+        const profiles = await ProfileModel.findAll({
+            where: {
+                local: true
+            }
+        });
 
         if (!profiles || profiles.length === 0) {
             res.status(404).send("No profiles found");
+            return
+        }
+
+        res.status(200).json(profiles);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+export const getProfilesWithChats = async (req: Request, res: Response) => {
+    try {
+        const profiles = await ProfileModel.findAll({
+            where: {
+                local: false
+            },
+            include: {
+                model: ChatModel,
+            }
+        });
+
+        if (!profiles) {
+            res.status(400).send("Profiles error");
             return
         }
 
@@ -22,7 +48,7 @@ export const createProfiles = async (req: Request, res: Response) => {
     try {
         const { name, img } = req.body;
 
-        const newProfile = await ProfileModel.create({ name, img });
+        const newProfile = await ProfileModel.create({ name, img, local: true });
 
         if (!newProfile) {
             res.status(400).send("Failed to create profile");
@@ -40,7 +66,7 @@ export const connectProfile = async (req: Request, res: Response) => {
         const { newUser } = req.body;
 
         // Registramos el usuario localmente
-        const newProfile = await ProfileModel.create({ id: idUserToConnect, name: newUser.name, img: newUser.img });
+        const newProfile = await ProfileModel.create({ id: idUserToConnect, name: newUser.name, img: newUser.img, local: false });
 
         if (!newProfile) {
             res.status(400).send("Failed to create profile connection");

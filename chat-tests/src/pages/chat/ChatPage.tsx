@@ -4,28 +4,39 @@ import styles from './ChatPage.module.css'
 import exampleImage from '../../assets/profile-example.jpg'
 import { MessageElement } from '../../components/messageElement/MessageElement'
 import { ChatElement } from '../../components/chatElement/ChatElement'
-import { filterChats, useMessages } from './hook/useMessages'
+import { filterChats, useMessages, useNewMessages } from './hook/useMessages'
 import { NavBar } from '../../components/navbar/NavBar'
 
 interface Message {
-    msg: string,
-    user: number | string
+    msg: string
+    user: string
 }
 
 interface UserProfile {
-    id: number
+    id: string
     name: string
     msg: string
     selected: boolean
 } 
 
+interface ChatProfile {
+    id: string
+    selected: boolean
+    profileInfo: {
+        id: string
+        name: string
+        img: string | null
+    }
+    messages: Array<{ id: string, text: string, profileId: string }>
+}
+
 export const ChatPage = () => {
 
-    const [chatsProfiles, setChatsProfiles] = useState<Array<UserProfile>>([
-        { id: 1, name: 'Alejandro', msg: 'Hola', selected: false },
-        { id: 2, name: 'Miguel', msg: 'Hola', selected: true },
-        { id: 3, name: 'Sara', msg: 'Hola', selected: false },
-        { id: 4, name: 'Juán', msg: 'Hola', selected: false },
+    const [chatsProfiles, setChatsProfiles] = useState<Array<ChatProfile>>([
+        // { id: '1', name: 'Alejandro', msg: 'Hola', selected: false },
+        // { id: '2', name: 'Miguel', msg: 'Hola', selected: true },
+        // { id: '3', name: 'Sara', msg: 'Hola', selected: false },
+        // { id: '4', name: 'Juán', msg: 'Hola', selected: false },
     ])
 
     const [messages, setMessages] = useState<Array<Message>>([
@@ -34,7 +45,7 @@ export const ChatPage = () => {
     ])
     const [newMessage, setNewMessage] = useState('')
 
-    const [selectedChat, setSelectedChat] = useState<number>(5)
+    const [selectedChat, setSelectedChat] = useState<string>('')
 
     const handleSubmitMessage = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -48,33 +59,49 @@ export const ChatPage = () => {
         setNewMessage(e.target.value)
     }
 
-    const handleSelectChat = (name: string) => {
-        const newChatsProfile: Array<UserProfile> = []
+    const handleSelectChat = (id: string) => {
+        const newChatsProfile: Array<ChatProfile> = []
         chatsProfiles.forEach(chat => {
-            if (chat.name === name) {
+            if (chat.id === id) {
                 newChatsProfile.push({ ...chat, selected: true })
-                setSelectedChat(chat.id)
+                // setSelectedChat(chat.id)
             } else {
                 newChatsProfile.push({ ...chat, selected: false })
             }
         })
         setChatsProfiles(newChatsProfile)
+        const selectedChatMessages: Array<Message> = []
+        chatsProfiles.find(chat => chat.id === id)?.messages
+            .forEach(message => {
+                selectedChatMessages.push({ 
+                    msg: message.text, 
+                    user: message.profileId 
+                })
+            })
+        setMessages(selectedChatMessages)
     }
 
     useEffect(() => {
-        const chatMessages = useMessages(selectedChat)
-        setMessages(chatMessages)
-        const chats: Array<UserProfile> = []
-        filterChats().forEach(chat => {
-            chats.push({
-                id: chat.id,
-                name: "Alejandro",
-                msg: 'Hola',
-                selected: true
-            })
-        })
-        setChatsProfiles(chats)
-    }, [selectedChat])
+        // const chatMessages = useMessages(selectedChat)
+        // setMessages(chatMessages)
+        // const chats: Array<UserProfile> = []
+        // filterChats().forEach(chat => {
+        //     chats.push({
+        //         id: chat.id,
+        //         name: "Alejandro",
+        //         msg: 'Hola',
+        //         selected: false
+        //     })
+        // })
+        // setChatsProfiles(chats)
+    }, [])
+
+    useEffect(() => {
+        (async () => {
+            const info = await useNewMessages()
+            setChatsProfiles(info)
+        })()
+    }, [])
 
     return (
         <div className={styles.container}>
@@ -85,8 +112,9 @@ export const ChatPage = () => {
                 {
                     chatsProfiles.map(chat => (
                         <ChatElement 
-                            name={chat.name} 
-                            msg={chat.msg} 
+                            id={chat.id}
+                            name={chat.profileInfo.name} 
+                            msg={chat.profileInfo.name} 
                             selected={chat.selected} 
                             handleSelectChat={handleSelectChat}
                         />
@@ -96,7 +124,7 @@ export const ChatPage = () => {
             <div className={styles["chat-container"]}>
                 <div className={styles["messages-header"]}>
                     <img src={exampleImage} alt="" />
-                    <h6>{chatsProfiles.find(chat => chat.selected)?.name}</h6>
+                    <h6>{chatsProfiles.find(chat => chat.selected)?.profileInfo.name}</h6>
                 </div>
                 <div className={styles["messages-container"]}>
                     {

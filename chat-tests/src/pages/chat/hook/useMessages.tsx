@@ -9,12 +9,12 @@ interface Message {
 }
 
 interface UserChat {
-    idUser: any,
-    idChat: number
+    idUser: string,
+    idChat: string
 }
 
 interface Chat {
-    id: number,
+    id: string,
     users: Array<UserChat>
 }
 
@@ -52,4 +52,41 @@ export const useMessages = (idChat: string | number) => {
     })
     if (chatMessages.some(message => message.user === localStorage.getItem("userId"))) return chatMessages
     else return []
+}
+
+interface UserProfile {
+    id: string
+    name: string
+    img: string | null
+}
+
+interface UserMessage {
+    id: string
+    text: string
+    profileId: string
+}
+
+interface ChatProfile {
+    id: string
+    selected: boolean
+    profileInfo: UserProfile
+    messages: Array<UserMessage>
+}
+
+export const useNewMessages = async () => {
+    const chats: Array<ChatProfile> = []
+    const chatsWithMessages = await fetch('http://localhost:3500/chat')
+        .then(res => res.json())
+        .catch(err => console.log(err))
+    chatsWithMessages.forEach((chat: any) => chats.push({
+        id: chat.id,
+        selected: false,
+        profileInfo: {
+            id: chat.Profiles[0].id,
+            name: chat.Profiles[0].name,
+            img: chat.Profiles[0].img
+        },
+        messages: chat.Messages
+    }))
+    return chats
 }

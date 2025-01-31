@@ -3,17 +3,18 @@ import styles from './ChatElement.module.css'
 import exampleImage from '../../assets/profile-example.jpg'
 
 interface ChatElementProps {
+    id: string
     name: string 
     msg: string
     selected: boolean
     handleSelectChat: (name: string) => void
 }
 
-export const ChatElement = ({ name, msg, selected, handleSelectChat }: ChatElementProps) => {
+export const ChatElement = ({ id, name, msg, selected, handleSelectChat }: ChatElementProps) => {
     return (
         <div 
             className={`${styles.container} ${selected ? styles.selected : ''}`}
-            onClick={() => handleSelectChat(name)}
+            onClick={() => handleSelectChat(id)}
         >
             <img src={exampleImage} alt="foto" />
             <div className={styles.info}>

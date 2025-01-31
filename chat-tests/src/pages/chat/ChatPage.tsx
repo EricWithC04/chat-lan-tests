@@ -4,20 +4,13 @@ import styles from './ChatPage.module.css'
 import exampleImage from '../../assets/profile-example.jpg'
 import { MessageElement } from '../../components/messageElement/MessageElement'
 import { ChatElement } from '../../components/chatElement/ChatElement'
-import { filterChats, useMessages, useNewMessages } from './hook/useMessages'
+import { useMessages } from './hook/useMessages'
 import { NavBar } from '../../components/navbar/NavBar'
 
 interface Message {
     msg: string
     user: string
 }
-
-interface UserProfile {
-    id: string
-    name: string
-    msg: string
-    selected: boolean
-} 
 
 interface ChatProfile {
     id: string
@@ -45,7 +38,7 @@ export const ChatPage = () => {
     ])
     const [newMessage, setNewMessage] = useState('')
 
-    const [selectedChat, setSelectedChat] = useState<string>('')
+    const [selectedChat, setSelectedChat] = useState<ChatProfile | null>(null)
 
     const handleSubmitMessage = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -64,7 +57,7 @@ export const ChatPage = () => {
         chatsProfiles.forEach(chat => {
             if (chat.id === id) {
                 newChatsProfile.push({ ...chat, selected: true })
-                // setSelectedChat(chat.id)
+                setSelectedChat(chat)
             } else {
                 newChatsProfile.push({ ...chat, selected: false })
             }
@@ -82,23 +75,8 @@ export const ChatPage = () => {
     }
 
     useEffect(() => {
-        // const chatMessages = useMessages(selectedChat)
-        // setMessages(chatMessages)
-        // const chats: Array<UserProfile> = []
-        // filterChats().forEach(chat => {
-        //     chats.push({
-        //         id: chat.id,
-        //         name: "Alejandro",
-        //         msg: 'Hola',
-        //         selected: false
-        //     })
-        // })
-        // setChatsProfiles(chats)
-    }, [])
-
-    useEffect(() => {
         (async () => {
-            const info = await useNewMessages()
+            const info = await useMessages()
             setChatsProfiles(info)
         })()
     }, [])
@@ -121,30 +99,38 @@ export const ChatPage = () => {
                     ))
                 }
             </div>
-            <div className={styles["chat-container"]}>
-                <div className={styles["messages-header"]}>
-                    <img src={exampleImage} alt="" />
-                    <h6>{chatsProfiles.find(chat => chat.selected)?.profileInfo.name}</h6>
-                </div>
-                <div className={styles["messages-container"]}>
-                    {
-                        messages.map((message) => (
-                            <MessageElement msg={message.msg} user={message.user} />
-                        ))
-                    }
-                </div>
-                <div className={styles["messages-input"]}>
-                    <form onSubmit={handleSubmitMessage}>
-                        <input 
-                            type="text" 
-                            placeholder='Escribe un mensaje ...' 
-                            onChange={handleInputChange} 
-                            value={newMessage}
-                        />
-                        <button type="submit"><FaPaperPlane color='#0979b0'/></button>
-                    </form>
-                </div>
-            </div>
+            {
+                selectedChat !== null ? (
+                    <div className={styles["chat-container"]}>
+                        <div className={styles["messages-header"]}>
+                            <img src={exampleImage} alt="" />
+                            <h6>{chatsProfiles.find(chat => chat.selected)?.profileInfo.name}</h6>
+                        </div>
+                        <div className={styles["messages-container"]}>
+                            {
+                                messages.map((message) => (
+                                    <MessageElement msg={message.msg} user={message.user} />
+                                ))
+                            }
+                        </div>
+                        <div className={styles["messages-input"]}>
+                            <form onSubmit={handleSubmitMessage}>
+                                <input 
+                                    type="text" 
+                                    placeholder='Escribe un mensaje ...' 
+                                    onChange={handleInputChange} 
+                                    value={newMessage}
+                                />
+                                <button type="submit"><FaPaperPlane color='#0979b0'/></button>
+                            </form>
+                        </div>
+                    </div>
+                ) : (
+                    <div className={styles['chat-container']}>
+                        <p>Seleccione un chat</p>
+                    </div>
+                )
+            }
         </div>
     )
 }

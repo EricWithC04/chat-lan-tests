@@ -36,11 +36,11 @@ export const createProfiles = async (req: Request, res: Response) => {
 
 export const connectProfile = async (req: Request, res: Response) => {
     try {
-        const { idUser } = req.params; 
+        const { idUser, idUserToConnect } = req.params; 
         const { newUser } = req.body;
 
         // Registramos el usuario localmente
-        const newProfile = await ProfileModel.create({ name: newUser.name, img: newUser.img });
+        const newProfile = await ProfileModel.create({ id: idUserToConnect, name: newUser.name, img: newUser.img });
 
         if (!newProfile) {
             res.status(400).send("Failed to create profile connection");

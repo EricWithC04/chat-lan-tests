@@ -5,6 +5,6 @@ const profileRouter: Router = Router();
 
 profileRouter.get("/", getProfiles);
 profileRouter.post("/", createProfiles);
-profileRouter.post("/:idUser", connectProfile);
+profileRouter.post("/:idUser/:idUserToConnect", connectProfile);
 
 export { profileRouter }

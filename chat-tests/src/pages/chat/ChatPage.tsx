@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { FaPaperPlane } from 'react-icons/fa'
+import { io } from 'socket.io-client'
 import styles from './ChatPage.module.css'
 import exampleImage from '../../assets/profile-example.jpg'
 import { MessageElement } from '../../components/messageElement/MessageElement'
@@ -22,6 +23,8 @@ interface ChatProfile {
     }
     messages: Array<{ id: string, text: string, profileId: string }>
 }
+
+const socket = io('http://localhost:3500')
 
 export const ChatPage = () => {
 
@@ -56,6 +59,7 @@ export const ChatPage = () => {
 
             setMessages(prev => [...prev, messageToInclude])
             setNewMessage('')
+            socket.emit("message", messageToInclude)
 
             const newChatsProfile: Array<ChatProfile> = [...chatsProfiles]
             newChatsProfile.find(chat => chat.id === selectedChat!.id)!.messages.push({ id: '', text: newMessage, profileId: localStorage.getItem("userId")! })
@@ -94,6 +98,21 @@ export const ChatPage = () => {
             const info = await useMessages()
             setChatsProfiles(info)
         })()
+    }, [])
+
+    useEffect(() => {
+        socket.on("message", (message: Message) => {
+            setMessages(prev => [...prev, message])
+
+            const newChatsProfile: Array<ChatProfile> = [...chatsProfiles]
+            newChatsProfile.find(chat => chat.id === selectedChat!.id)!.messages.push({ id: '', text: message.msg, profileId: message.user })
+            console.log(newChatsProfile);
+            setChatsProfiles(newChatsProfile)
+        })
+
+        return () => {
+            socket.off("message");
+        };
     }, [])
 
     return (

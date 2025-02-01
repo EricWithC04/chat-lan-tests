@@ -12,11 +12,13 @@ export const getChats = async (req: Request, res: Response) => {
             include: [
                 {
                     model: MessageModel,
-                    attributes: [ "id", "text", "profileId"]
+                    attributes: [ "id", "text", "profileId", "createdAt"],
+                    separate: true,
+                    order: [["createdAt", "ASC"]]
                 },
                 {
                     model: ProfileModel,
-                    attributes: [ "id", "name", "img"]
+                    attributes: [ "id", "name", "img"],
                 }
             ]
         });

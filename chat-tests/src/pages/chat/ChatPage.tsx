@@ -43,8 +43,23 @@ export const ChatPage = () => {
     const handleSubmitMessage = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (newMessage.length > 0) {
-            setMessages(prev => [...prev, { msg: newMessage, user: localStorage.getItem("userId")! }])
+
+            fetch(`http://localhost:3500/message/${localStorage.getItem("userId")}/${selectedChat!.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: newMessage })
+            })
+
+            const messageToInclude = { msg: newMessage, user: localStorage.getItem("userId")! }
+
+            setMessages(prev => [...prev, messageToInclude])
             setNewMessage('')
+
+            const newChatsProfile: Array<ChatProfile> = [...chatsProfiles]
+            newChatsProfile.find(chat => chat.id === selectedChat!.id)!.messages.push({ id: '', text: newMessage, profileId: localStorage.getItem("userId")! })
+            setChatsProfiles(newChatsProfile)
         }
     }
 

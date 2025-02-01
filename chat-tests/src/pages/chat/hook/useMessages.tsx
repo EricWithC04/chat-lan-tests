@@ -23,6 +23,7 @@ export const useMessages = async () => {
     const chats: Array<ChatProfile> = []
     const chatsWithMessages = await fetch(`http://localhost:3500/chat/${localStorage.getItem("userId")}`)
         .then(res => res.json())
+        .then(res => {console.log(res); return res})
         .catch(err => console.log(err))
     chatsWithMessages.forEach((chat: any) => {
         const userProfile = chat.Profiles.find((profile: any) => profile.id !== localStorage.getItem("userId"))

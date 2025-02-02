@@ -24,10 +24,10 @@ interface ChatProfile {
     messages: Array<{ id: string, text: string, profileId: string }>
 }
 
-const socket = io('http://localhost:3500')
-
 export const ChatPage = () => {
 
+    const [socket, setSocket] = useState<any>()
+    
     const [chatsProfiles, setChatsProfiles] = useState<Array<ChatProfile>>([
         // { id: '1', name: 'Alejandro', msg: 'Hola', selected: false },
         // { id: '2', name: 'Miguel', msg: 'Hola', selected: true },
@@ -57,7 +57,7 @@ export const ChatPage = () => {
 
             const messageToInclude = { msg: newMessage, user: localStorage.getItem("userId")! }
 
-            setMessages(prev => [...prev, messageToInclude])
+            // setMessages(prev => [...prev, messageToInclude])
             setNewMessage('')
             socket.emit("message", messageToInclude)
 
@@ -101,7 +101,10 @@ export const ChatPage = () => {
     }, [])
 
     useEffect(() => {
-        socket.on("message", (message: Message) => {
+        const socketConnection = io('http://localhost:3500')
+        setSocket(socketConnection)
+
+        socketConnection.on("message", (message: Message) => {
             setMessages(prev => [...prev, message])
 
             const newChatsProfile: Array<ChatProfile> = [...chatsProfiles]
@@ -111,7 +114,9 @@ export const ChatPage = () => {
         })
 
         return () => {
-            socket.off("message");
+            socketConnection.off("message");
+            socketConnection.off("disconnect");
+            socketConnection.disconnect()
         };
     }, [])
 

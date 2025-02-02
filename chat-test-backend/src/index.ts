@@ -7,11 +7,16 @@ const UDP_PORT = 41234; // Puerto para UDP broadcast
 const SOCKET_PORT = 3000; // Puerto para Socket.IO
 
 const udpSocket = dgram.createSocket('udp4');
-const peers = new Set(); // Almacena los nodos descubiertos
+const peers: Set<string> = new Set(); // Almacena los nodos descubiertos
 
 // Crear servidor HTTP y Socket.IO
 const server = http.createServer();
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: '*',
+        // methods: ['GET', 'POST'],
+    },
+});
 
 server.listen(SOCKET_PORT, () => {
     console.log(`Socket.IO server running on http://localhost:${SOCKET_PORT}`);
@@ -54,6 +59,10 @@ io.on('connection', (socket) => {
     socket.on('chat-message', (data) => {
         console.log('Mensaje recibido:', data);
         socket.broadcast.emit('chat-message', data); // Enviar mensaje a todos los demás clientes
+        peers.forEach((peer: any) => {
+            const socket2 = ioClient(peer);
+            socket2.emit('chat-message', data);
+        })
     });
 
     socket.on('disconnect', () => {

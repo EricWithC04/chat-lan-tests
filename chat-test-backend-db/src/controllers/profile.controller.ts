@@ -8,7 +8,8 @@ export const getProfiles = async (_req: Request, res: Response) => {
         const profiles = await ProfileModel.findAll({
             where: {
                 local: true
-            }
+            },
+            logging: false
         });
 
         if (!profiles || profiles.length === 0) {
@@ -30,7 +31,8 @@ export const getProfilesWithChats = async (req: Request, res: Response) => {
             },
             include: {
                 model: ChatModel,
-            }
+            },
+            logging: false
         });
 
         if (!profiles) {
@@ -48,7 +50,9 @@ export const createProfiles = async (req: Request, res: Response) => {
     try {
         const { name, img } = req.body;
 
-        const newProfile = await ProfileModel.create({ name, img, local: true });
+        const newProfile = await ProfileModel.create({ name, img, local: true }, {
+            logging: false
+        });
 
         if (!newProfile) {
             res.status(400).send("Failed to create profile");
@@ -66,15 +70,28 @@ export const connectProfile = async (req: Request, res: Response) => {
         const { newUser } = req.body;
 
         // Registramos el usuario localmente
-        const newProfile = await ProfileModel.create({ id: idUserToConnect, name: newUser.name, img: newUser.img, local: false });
+
+        let newProfile = await ProfileModel.findOne({
+            where: {
+                id: idUserToConnect
+            },
+            logging: false
+        })
 
         if (!newProfile) {
-            res.status(400).send("Failed to create profile connection");
-            return
+            newProfile = await ProfileModel.create({ id: idUserToConnect, name: newUser.name, img: newUser.img, local: false }, {
+                logging: false
+            });
+    
+            if (!newProfile) {
+                res.status(400).send("Failed to create profile connection");
+                return
+            }
         }
 
+
         // Agregamos un chat con ese usuario automaticamente
-        const newChat = await ChatModel.create()
+        const newChat = await ChatModel.create({}, { logging: false })
 
         if (!newChat) {
             res.status(400).send("Failed to create chat connection");

@@ -3,7 +3,7 @@ import { ProfileChatTable } from "../models/profile_chat.table";
 
 export const getProfileChats = async (_req: Request, res: Response) => {
     try {
-        const profileChats = await ProfileChatTable.findAll();
+        const profileChats = await ProfileChatTable.findAll({ logging: false });
 
         if (!profileChats || profileChats.length === 0) {
             res.status(404).send("No profileChats found");
@@ -20,7 +20,7 @@ export const createProfileChats = async (_req: Request, res: Response) => {
     try {
         // const { name, img } = req.body;
 
-        const newProfileChat = await ProfileChatTable.create();
+        const newProfileChat = await ProfileChatTable.create({}, { logging: false });
 
         if (!newProfileChat) {
             res.status(400).send("Failed to create profile chat");
@@ -35,8 +35,8 @@ export const createProfileChats = async (_req: Request, res: Response) => {
 export const assignProfiles = async (users: Array<{ id: string }>, idChat: string) => {
     return new Promise(async (resolve, reject) => {
         try {
-            await ProfileChatTable.create({ userId: users[0].id, chatId: idChat });
-            await ProfileChatTable.create({ userId: users[1].id, chatId: idChat });
+            await ProfileChatTable.create({ userId: users[0].id, chatId: idChat }, { logging: false });
+            await ProfileChatTable.create({ userId: users[1].id, chatId: idChat }, { logging: false });
             resolve("Created profile chats");
         } catch (err) {
             console.error(err);

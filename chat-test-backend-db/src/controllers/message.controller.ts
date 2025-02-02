@@ -3,7 +3,7 @@ import { MessageModel } from "../models/message.model";
 
 export const getMessages = async (_req: Request, res: Response) => {
     try {
-        const messages = await MessageModel.findAll();
+        const messages = await MessageModel.findAll({ logging: false });
 
         if (!messages || messages.length === 0) {
             res.status(404).send("No messages found");
@@ -21,7 +21,7 @@ export const createMessage = async (req: Request, res: Response) => {
         const { profileId, chatId } = req.params;
         const { text } = req.body;
 
-        const newMessage = await MessageModel.create({ text, profileId, chatId });
+        const newMessage = await MessageModel.create({ text, profileId, chatId }, { logging: false });
 
         if (!newMessage) {
             res.status(400).send("Failed to create message");

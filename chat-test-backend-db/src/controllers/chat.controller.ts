@@ -20,7 +20,8 @@ export const getChats = async (req: Request, res: Response) => {
                     model: ProfileModel,
                     attributes: [ "id", "name", "img"],
                 }
-            ]
+            ],
+            logging: false
         });
 
         if (!chats || chats.length === 0) {
@@ -40,7 +41,7 @@ export const createChat = async (req: Request, res: Response) => {
     try {
         const users: Array<{ id: string }> = req.body.users;
 
-        const newChat = await ChatModel.create();
+        const newChat = await ChatModel.create({}, { logging: false });
 
         if (!newChat) {
             res.status(400).send("Failed to create chat");

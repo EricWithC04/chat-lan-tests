@@ -16,6 +16,7 @@ import { chatRouter } from "./routes/chat.routes";
 import { messageRouter } from "./routes/message.routes";
 import { profileChatRouter } from "./routes/profile_chat.routes";
 import { setupSocketListeners } from "./utils/setupSocketListeners";
+import { getUserDataById } from "./utils/getUserData";
 
 const app: Application = Express()
 const server = http.createServer(app)
@@ -65,11 +66,14 @@ udpSocket.bind(UDP_PORT, () => {
 
 setInterval(() => {
     if (loggedUser !== null) {
-        const message = JSON.stringify({ id: loggedUser, ip: getLocalIp(), port: PORT });
-        udpSocket.send(message, 0, message.length, UDP_PORT, '255.255.255.255', (err) => {
-            if (err) console.error('Error broadcasting:', err);
-        });
-        console.log("Emitiendo señal de usuario conectado: " + loggedUser);
+        (async () => {
+            const userData = await getUserDataById(loggedUser)
+            const message = JSON.stringify({ userData, ip: getLocalIp(), port: PORT });
+            udpSocket.send(message, 0, message.length, UDP_PORT, '255.255.255.255', (err) => {
+                if (err) console.error('Error broadcasting:', err);
+            });
+            console.log("Emitiendo señal de usuario conectado: " + JSON.stringify(userData));
+        })()
     }
 }, 5000);
 

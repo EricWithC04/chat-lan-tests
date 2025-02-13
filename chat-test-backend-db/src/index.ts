@@ -1,4 +1,4 @@
-import Express, { Application } from "express"
+import Express, { Application, Request, Response } from "express"
 import dgram from "dgram"
 import http from "http"
 import { Server, Socket } from "socket.io";
@@ -27,6 +27,8 @@ const peers: Set<string> = new Set()
 const UDP_PORT = 41234; // Puerto para UDP broadcast
 const PORT = 3500; // Puerto para Socket.IO
 
+let loggedUser: string | null = null;
+
 app.use(morgan("dev"))
 app.use(cors())
 app.use(Express.json())
@@ -36,16 +38,39 @@ app.use("/chat", chatRouter)
 app.use("/message", messageRouter)
 app.use("/profile-chat", profileChatRouter)
 
+app.post("/login/:idUser", (req: Request, res: Response) => {
+    try {
+        const { idUser } = req.params;
+        loggedUser = idUser;
+        
+        res.status(200).send("Logged in");
+    } catch (err) {
+        console.error(err);
+    }
+})
+app.post("/logout", (_req: Request, res: Response) => {
+    try {
+        loggedUser = null;
+        
+        res.status(200).send("Logged out");
+    } catch (err) {
+        console.error(err);
+    }
+})
+
 udpSocket.bind(UDP_PORT, () => {
     udpSocket.setBroadcast(true)
     console.log(`UDP server listening on port ${UDP_PORT}`);
 })
 
 setInterval(() => {
-    const message = JSON.stringify({ ip: getLocalIp(), port: PORT });
-    udpSocket.send(message, 0, message.length, UDP_PORT, '255.255.255.255', (err) => {
-        if (err) console.error('Error broadcasting:', err);
-    });
+    if (loggedUser !== null) {
+        const message = JSON.stringify({ id: loggedUser, ip: getLocalIp(), port: PORT });
+        udpSocket.send(message, 0, message.length, UDP_PORT, '255.255.255.255', (err) => {
+            if (err) console.error('Error broadcasting:', err);
+        });
+        console.log("Emitiendo señal de usuario conectado: " + loggedUser);
+    }
 }, 5000);
 
 udpSocket.on('message', (msg) => {

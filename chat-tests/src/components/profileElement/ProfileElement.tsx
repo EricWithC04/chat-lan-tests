@@ -10,7 +10,14 @@ export const ProfileElement = ({ id, name, img }: { id: string, name: string, im
 
     const handleClick = (userId: string) => {
         localStorage.setItem("userId", userId)
-        navigate("/chat")
+        fetch(`http://localhost:3500/login/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then((_res) => navigate("/chat"))
+            .catch(err => console.log(err))
     }
 
     return (

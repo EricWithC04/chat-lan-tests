@@ -17,7 +17,9 @@ export const NavBar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("userId")
-        navigate("/")
+        fetch('http://localhost:3500/logout', { method: 'POST' })
+            .then(_res => navigate("/"))
+            .catch(err => console.error(err))
     }
 
     return (

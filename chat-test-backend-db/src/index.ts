@@ -83,6 +83,8 @@ udpSocket.on('message', (msg) => {
 
     if (!peers.has(peerAddress) && peerAddress !== `http://${getLocalIp()}:${PORT}`) {
         console.log(`Nodo descubierto: ${peerAddress}`);
+        console.log(`Datos del usuario: ${JSON.stringify(node.userData)}`);
+        
         peers.add(peerAddress);
 
         // Intentar conectarse al nodo descubierto

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { ProfileElement } from '../../components/profileElement/ProfileElement'
 import { FiPlusCircle } from "react-icons/fi";
-import styles from './profiles.module.css'
+import styles from './Profiles.module.css'
 import { CreateProfileModal } from '../../components/createProfileModal/CreateProfileModal';
 
 interface Profile {

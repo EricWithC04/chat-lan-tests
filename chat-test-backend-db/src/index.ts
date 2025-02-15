@@ -17,6 +17,7 @@ import { messageRouter } from "./routes/message.routes";
 import { profileChatRouter } from "./routes/profile_chat.routes";
 import { setupSocketListeners } from "./utils/setupSocketListeners";
 import { getUserDataById } from "./utils/getUserData";
+import { registerLocalUser } from "./utils/registerLocalUser";
 
 const app: Application = Express()
 const server = http.createServer(app)
@@ -85,6 +86,7 @@ udpSocket.on('message', (msg) => {
         console.log(`Nodo descubierto: ${peerAddress}`);
         console.log(`Datos del usuario: ${JSON.stringify(node.userData)}`);
         
+        registerLocalUser(node.userData)
         peers.add(peerAddress);
 
         // Intentar conectarse al nodo descubierto

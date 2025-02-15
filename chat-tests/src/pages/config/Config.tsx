@@ -1,5 +1,5 @@
 // import React from 'react'
-import styles from './config.module.css'
+import styles from './Config.module.css'
 import inDevelopment from '../../assets/in-development.png'
 import { NavBar } from '../../components/navbar/NavBar'
 

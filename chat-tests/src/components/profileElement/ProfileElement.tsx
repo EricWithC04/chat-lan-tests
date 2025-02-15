@@ -1,5 +1,5 @@
 // import React from 'react'
-import styles from './profileElement.module.css'
+import styles from './ProfileElement.module.css'
 // import imageExample from '../../assets/profile-example.jpg'
 import defaultProfile from '../../assets/profile-default.jpg'
 import { useNavigate } from 'react-router-dom'

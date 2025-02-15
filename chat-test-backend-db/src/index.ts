@@ -86,7 +86,7 @@ udpSocket.on('message', (msg) => {
         console.log(`Nodo descubierto: ${peerAddress}`);
         console.log(`Datos del usuario: ${JSON.stringify(node.userData)}`);
         
-        registerLocalUser(node.userData)
+        registerLocalUser({ ...node.userData, local: false })
         peers.add(peerAddress);
 
         // Intentar conectarse al nodo descubierto

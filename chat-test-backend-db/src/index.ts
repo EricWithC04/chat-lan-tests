@@ -73,7 +73,7 @@ setInterval(() => {
             udpSocket.send(message, 0, message.length, UDP_PORT, '255.255.255.255', (err) => {
                 if (err) console.error('Error broadcasting:', err);
             });
-            console.log("Emitiendo señal de usuario conectado: " + JSON.stringify(userData));
+            // console.log("Emitiendo señal de usuario conectado: " + JSON.stringify(userData));
         })()
     }
 }, 5000);

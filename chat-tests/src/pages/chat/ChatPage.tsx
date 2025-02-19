@@ -47,19 +47,20 @@ export const ChatPage = () => {
         e.preventDefault()
         if (newMessage.length > 0) {
 
-            fetch(`http://localhost:3500/message/${localStorage.getItem("userId")}/${selectedChat!.id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ text: newMessage })
-            })
+            // fetch(`http://localhost:3500/message/${localStorage.getItem("userId")}/${selectedChat!.id}`, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({ text: newMessage })
+            // })
 
-            const messageToInclude = { msg: newMessage, user: localStorage.getItem("userId")! }
+            // const messageToInclude = { msg: newMessage, user: localStorage.getItem("userId")! }
 
             // setMessages(prev => [...prev, messageToInclude])
+            socket.emit("chat-message", { senderId: localStorage.getItem("userId")!, receiverId: selectedChat!.id, text: newMessage })
             setNewMessage('')
-            socket.emit("message", messageToInclude)
+            // socket.emit("message", messageToInclude)
 
             const newChatsProfile: Array<ChatProfile> = [...chatsProfiles]
             newChatsProfile.find(chat => chat.id === selectedChat!.id)!.messages.push({ id: '', text: newMessage, profileId: localStorage.getItem("userId")! })

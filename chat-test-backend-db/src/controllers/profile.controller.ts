@@ -50,13 +50,25 @@ export const createProfiles = async (req: Request, res: Response) => {
     try {
         const { name, img } = req.body;
 
-        const newProfile = await ProfileModel.create({ name, img, local: true }, {
+        const newProfile: any = await ProfileModel.create({ name, img, local: true }, {
             logging: false
         });
 
         if (!newProfile) {
             res.status(400).send("Failed to create profile");
         }
+
+        const restOfProfiles = await ProfileModel.findAll({
+            where: {
+                local: false
+            }
+        })
+
+        restOfProfiles.forEach(async (profile: any) => {
+            const newChat: any = await ChatModel.create()
+            await ChatModel.create({ userId: newProfile.id, chatId: newChat.id }, { logging: false })
+            await ChatModel.create({ userId: profile.id, chatId: newChat.id }, { logging: false })
+        })
 
         res.status(201).json(newProfile);
     } catch (err) {

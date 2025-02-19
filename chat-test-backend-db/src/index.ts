@@ -18,6 +18,7 @@ import { profileChatRouter } from "./routes/profile_chat.routes";
 import { setupSocketListeners } from "./utils/setupSocketListeners";
 import { getUserDataById } from "./utils/getUserData";
 import { registerLocalUser } from "./utils/registerLocalUser";
+import { localProfileExists } from "./utils/localProfileExists";
 
 const app: Application = Express()
 const server = http.createServer(app)
@@ -79,20 +80,24 @@ setInterval(() => {
 }, 5000);
 
 udpSocket.on('message', (msg) => {
-    const node = JSON.parse(msg.toString());
-    const peerAddress = `http://${node.ip}:${node.port}`;
-
-    if (!peers.has(peerAddress) && peerAddress !== `http://${getLocalIp()}:${PORT}`) {
-        console.log(`Nodo descubierto: ${peerAddress}`);
-        console.log(`Datos del usuario: ${JSON.stringify(node.userData)}`);
-        
-        registerLocalUser({ ...node.userData, local: false })
-        peers.add(peerAddress);
-
-        // Intentar conectarse al nodo descubierto
-        const socket = ioClient(peerAddress);
-        setupSocketListeners(peers, io, socket);
-    }
+    (async function() {
+        const node = JSON.parse(msg.toString());
+        const peerAddress = `http://${node.ip}:${node.port}`;
+        const nodeId = node.userData.id;
+        const existProfile = await localProfileExists(nodeId);
+    
+        if (!peers.has(peerAddress) && peerAddress !== `http://${getLocalIp()}:${PORT}` && !existProfile) {
+            console.log(`Nodo descubierto: ${peerAddress} ID: ${nodeId}`);
+            console.log(`Datos del usuario: ${JSON.stringify(node.userData)}`);
+            
+            registerLocalUser({ ...node.userData, local: false })
+            peers.add(peerAddress);
+    
+            // Intentar conectarse al nodo descubierto
+            const socket = ioClient(peerAddress);
+            setupSocketListeners(peers, io, socket);
+        }
+    })()
 });
 
 io.on("connection", (socket: Socket) => {

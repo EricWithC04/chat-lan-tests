@@ -20,6 +20,12 @@ import { getUserDataById } from "./utils/getUserData";
 import { registerLocalUser } from "./utils/registerLocalUser";
 import { localProfileExists } from "./utils/localProfileExists";
 
+interface MessageData {
+    senderId: string;
+    receiverId: string;
+    message: string;
+}
+
 const app: Application = Express()
 const server = http.createServer(app)
 const io = new Server(server, { cors: { origin: "*" } })
@@ -70,7 +76,7 @@ setInterval(() => {
     if (loggedUser !== null) {
         (async () => {
             const userData = await getUserDataById(loggedUser)
-            const message = JSON.stringify({ userData, ip: getLocalIp(), port: PORT });
+            const message = JSON.stringify({ userData, ip: getLocalIp(), port: PORT, type: "message" });
             const subnet = getLocalIp().split('.').slice(0, 3).join('.') + '.255'
             udpSocket.send(message, 0, message.length, UDP_PORT, subnet, (err) => {
                 if (err) console.error('Error broadcasting:', err);
@@ -83,26 +89,27 @@ setInterval(() => {
 udpSocket.on('message', (msg) => {
     (async function() {
         const node = JSON.parse(msg.toString());
-        const peerAddress = `http://${node.ip}:${node.port}`;
-        const nodeId = node.userData.id;
-        const existProfile = await localProfileExists(nodeId);
 
-        if (peerAddress !== `http://${getLocalIp()}:${PORT}`) {
-            console.log("Nodo descubierto: ", peerAddress);
-            console.log("Nodo descubierto: ", JSON.stringify(node));
-        }
+        if (node.type === "message") {
+            const peerAddress = `http://${node.ip}:${node.port}`;
+            const nodeId = node.userData.id;
+            const existProfile = await localProfileExists(nodeId);
         
-    
-        if (!peers.has(peerAddress) && peerAddress !== `http://${getLocalIp()}:${PORT}` && !existProfile) {
-            console.log(`Nodo descubierto: ${peerAddress} ID: ${nodeId}`);
-            console.log(`Datos del usuario: ${JSON.stringify(node.userData)}`);
-            
-            registerLocalUser({ ...node.userData, local: false })
-            peers.add(peerAddress);
-    
-            // Intentar conectarse al nodo descubierto
-            const socket = ioClient(peerAddress);
-            setupSocketListeners(peers, io, socket);
+            if (!peers.has(peerAddress) && peerAddress !== `http://${getLocalIp()}:${PORT}` && !existProfile) {
+                console.log(`Nodo descubierto: ${peerAddress} ID: ${nodeId}`);
+                console.log(`Datos del usuario: ${JSON.stringify(node.userData)}`);
+                
+                registerLocalUser({ ...node.userData, local: false })
+                peers.add(peerAddress);
+        
+                // Intentar conectarse al nodo descubierto
+                const socket = ioClient(peerAddress);
+                setupSocketListeners(peers, io, socket);
+            }
+        }
+
+        if (node.type === "chat-message") {
+            console.log(`Mensaje recibido por UDP desde ${node.senderId}: `, node.message);
         }
     })()
 });
@@ -112,6 +119,24 @@ io.on("connection", (socket: Socket) => {
 
     socket.on("message", (message) => {
         socket.broadcast.emit("message", message);
+    })
+
+    socket.on("chat-message", (messageData: MessageData) => {
+        socket.broadcast.emit("chat-message", messageData);
+
+        if (peers.size > 0) {
+
+            const udpMessage = JSON.stringify({ ...messageData, type: "chat-message" })
+            
+            peers.forEach((peerAddress) => {
+                const peerIp = peerAddress.replace(/^http:\/\//, '').split(':')[0];
+
+                udpSocket.send(udpMessage, 0, udpMessage.length, UDP_PORT, peerIp, (err) => {
+                    if (err) console.error(`Error enviando mensaje a ${peerIp}:`, err);
+                });
+            })
+
+        }
     })
     
     socket.on("disconnect", () => {

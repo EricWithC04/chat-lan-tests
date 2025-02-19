@@ -77,7 +77,7 @@ setInterval(() => {
         (async () => {
             const userData = await getUserDataById(loggedUser)
             const message = JSON.stringify({ userData, ip: getLocalIp(), port: PORT, type: "message" });
-            const subnet = getLocalIp().split('.').slice(0, 3).join('.') + '.255'
+            const subnet = getLocalIp().split('.').slice(0, 2).join('.') + '.0.255'
             udpSocket.send(message, 0, message.length, UDP_PORT, subnet, (err) => {
                 if (err) console.error('Error broadcasting:', err);
             });
@@ -93,9 +93,9 @@ udpSocket.on('message', (msg) => {
         if (node.type === "message") {
             const peerAddress = `http://${node.ip}:${node.port}`;
             const nodeId = node.userData.id;
-            const existProfile = await localProfileExists(nodeId);
+            // const existProfile = await localProfileExists(nodeId);
         
-            if (!peers.has(peerAddress) && peerAddress !== `http://${getLocalIp()}:${PORT}` && !existProfile) {
+            if (!peers.has(peerAddress) && peerAddress !== `http://${getLocalIp()}:${PORT}`) {
                 console.log(`Nodo descubierto: ${peerAddress} ID: ${nodeId}`);
                 console.log(`Datos del usuario: ${JSON.stringify(node.userData)}`);
                 

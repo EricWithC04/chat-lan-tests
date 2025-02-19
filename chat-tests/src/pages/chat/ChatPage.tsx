@@ -58,7 +58,7 @@ export const ChatPage = () => {
             // const messageToInclude = { msg: newMessage, user: localStorage.getItem("userId")! }
 
             // setMessages(prev => [...prev, messageToInclude])
-            socket.emit("chat-message", { senderId: localStorage.getItem("userId")!, receiverId: selectedChat!.id, text: newMessage })
+            socket.emit("chat-message", { senderId: localStorage.getItem("userId")!, receiverId: selectedChat!.id, message: newMessage })
             setNewMessage('')
             // socket.emit("message", messageToInclude)
 

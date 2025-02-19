@@ -19,7 +19,7 @@ export const registerLocalUser = async (userData: UserData) => {
             await ProfileModel.create(userData as any)
             console.log("Nuevo usuario registrado");
 
-            const localProfiles: Array<any> = await ProfileModel.findAll({ where: { local: true } });
+            const localProfiles: Array<any> = await ProfileModel.findAll({ where: { local: true }, logging: false });
 
             localProfiles.forEach(async (profile) => {
                 if (profile.id !== userData.id) {

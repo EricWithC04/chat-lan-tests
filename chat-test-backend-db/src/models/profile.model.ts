@@ -21,5 +21,10 @@ export const ProfileModel = sequelize.define('Profile', {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: true
+    },
+    online: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     }
 })

@@ -114,6 +114,10 @@ export const ChatPage = () => {
             setChatsProfiles(newChatsProfile)
         })
 
+        socketConnection.on("profile-disconnected", (profileId: string) => {
+            alert(`El usuario no se encuentra conectado, intentalo más tarde \n ${profileId}`)
+        })
+
         return () => {
             socketConnection.off("message");
             socketConnection.off("disconnect");

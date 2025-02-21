@@ -19,6 +19,7 @@ import { setupSocketListeners } from "./utils/setupSocketListeners";
 import { getUserDataById } from "./utils/getUserData";
 import { registerLocalUser } from "./utils/registerLocalUser";
 import { localProfileExists } from "./utils/localProfileExists";
+import { setUserOffline } from "./utils/setUserOnline";
 
 interface MessageData {
     senderId: string;
@@ -59,6 +60,13 @@ app.post("/login/:idUser", (req: Request, res: Response) => {
 })
 app.post("/logout", (_req: Request, res: Response) => {
     try {
+        const message = JSON.stringify({ idUser: loggedUser, type: "user-disconnected" });
+        
+        const subnet = getLocalIp().split('.').slice(0, 2).join('.') + '.0.255'
+        udpSocket.send(message, 0, message.length, UDP_PORT, subnet, (err) => {
+            if (err) console.error('Error broadcasting:', err);
+        });
+
         loggedUser = null;
         
         res.status(200).send("Logged out");
@@ -76,7 +84,7 @@ setInterval(() => {
     if (loggedUser !== null) {
         (async () => {
             const userData = await getUserDataById(loggedUser)
-            const message = JSON.stringify({ userData, ip: getLocalIp(), port: PORT, type: "message" });
+            const message = JSON.stringify({ userData, ip: getLocalIp(), port: PORT, type: "user-connected" });
             const subnet = getLocalIp().split('.').slice(0, 2).join('.') + '.0.255'
             udpSocket.send(message, 0, message.length, UDP_PORT, subnet, (err) => {
                 if (err) console.error('Error broadcasting:', err);
@@ -90,10 +98,9 @@ udpSocket.on('message', (msg) => {
     (async function() {
         const node = JSON.parse(msg.toString());
 
-        if (node.type === "message") {
+        if (node.type === "user-connected") {
             const peerAddress = `http://${node.ip}:${node.port}`;
             const nodeId = node.userData.id;
-            // const existProfile = await localProfileExists(nodeId);
         
             if (!peers.has(peerAddress) && peerAddress !== `http://${getLocalIp()}:${PORT}`) {
                 console.log(`Nodo descubierto: ${peerAddress} ID: ${nodeId}`);
@@ -106,6 +113,10 @@ udpSocket.on('message', (msg) => {
                 const socket = ioClient(peerAddress);
                 setupSocketListeners(peers, io, socket);
             }
+        }
+
+        if (node.type === "user-disconnected") {
+            setUserOffline(node.idUser)
         }
 
         if (node.type === "chat-message") {
@@ -122,21 +133,28 @@ io.on("connection", (socket: Socket) => {
     })
 
     socket.on("chat-message", (messageData: MessageData) => {
-        socket.broadcast.emit("chat-message", messageData);
-
-        if (peers.size > 0) {
-
-            const udpMessage = JSON.stringify({ ...messageData, type: "chat-message" })
-            
-            peers.forEach((peerAddress) => {
-                const peerIp = peerAddress.replace(/^http:\/\//, '').split(':')[0];
-
-                udpSocket.send(udpMessage, 0, udpMessage.length, UDP_PORT, peerIp, (err) => {
-                    if (err) console.error(`Error enviando mensaje a ${peerIp}:`, err);
-                });
-            })
-
-        }
+        (async () => {
+            const userData: any = await getUserDataById(messageData.receiverId);
+            if (userData.online) {
+                socket.broadcast.emit("chat-message", messageData);
+        
+                if (peers.size > 0) {
+        
+                    const udpMessage = JSON.stringify({ ...messageData, type: "chat-message" })
+                    
+                    peers.forEach((peerAddress) => {
+                        const peerIp = peerAddress.replace(/^http:\/\//, '').split(':')[0];
+        
+                        udpSocket.send(udpMessage, 0, udpMessage.length, UDP_PORT, peerIp, (err) => {
+                            if (err) console.error(`Error enviando mensaje a ${peerIp}:`, err);
+                        });
+                    })
+        
+                }
+            } else {
+                socket.emit("profile-disconnected", messageData.receiverId)
+            }
+        })()
     })
     
     socket.on("disconnect", () => {

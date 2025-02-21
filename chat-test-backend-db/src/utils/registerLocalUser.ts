@@ -1,6 +1,7 @@
 import { ChatModel } from "../models/chat.model";
 import { ProfileModel } from "../models/profile.model";
 import { ProfileChatTable } from "../models/profile_chat.table";
+import { setUserOnline } from "./setUserOnline";
 
 interface UserData {
     id: string
@@ -29,6 +30,8 @@ export const registerLocalUser = async (userData: UserData) => {
                     await ProfileChatTable.create({ userId: userData.id, chatId: newChat.id }, { logging: false });
                 }
             });
+        } else {
+            setUserOnline(userData.id)
         }
     } catch (err) {
         console.error(err);

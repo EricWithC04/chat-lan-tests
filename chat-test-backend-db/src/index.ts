@@ -106,7 +106,7 @@ udpSocket.on('message', (msg) => {
                 console.log(`Nodo descubierto: ${peerAddress} ID: ${nodeId}`);
                 console.log(`Datos del usuario: ${JSON.stringify(node.userData)}`);
                 
-                registerLocalUser({ ...node.userData, local: false })
+                registerLocalUser(node.userData)
                 peers.add(peerAddress);
         
                 // Intentar conectarse al nodo descubierto
@@ -134,6 +134,8 @@ io.on("connection", (socket: Socket) => {
 
     socket.on("chat-message", (messageData: MessageData) => {
         (async () => {
+            console.log("Datos del mensaje: ", messageData);
+            
             const userData: any = await getUserDataById(messageData.receiverId);
             if (userData.online) {
                 socket.broadcast.emit("chat-message", messageData);

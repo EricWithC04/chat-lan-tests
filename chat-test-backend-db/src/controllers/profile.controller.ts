@@ -50,7 +50,7 @@ export const createProfiles = async (req: Request, res: Response) => {
     try {
         const { name, img } = req.body;
 
-        const newProfile: any = await ProfileModel.create({ name, img, local: true }, {
+        const newProfile: any = await ProfileModel.create({ name, img, local: true, online: true }, {
             logging: false
         });
 

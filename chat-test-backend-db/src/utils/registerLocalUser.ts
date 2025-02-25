@@ -7,7 +7,6 @@ interface UserData {
     id: string
     name: string
     img: string | null
-    local: boolean
     createdAt: string
     updatedAt: string
 }
@@ -17,7 +16,16 @@ export const registerLocalUser = async (userData: UserData) => {
         const profileExists = await ProfileModel.findOne({ where: { id: userData.id } });
     
         if (!profileExists) {
-            await ProfileModel.create(userData as any)
+            await ProfileModel.create({ 
+                id: userData.id, 
+                name: userData.name, 
+                img: userData.img, 
+                local: false, 
+                online: true 
+            }, { 
+                logging: false,
+                fields: ['id', 'name', 'img', 'local', 'online']
+            });
             console.log("Nuevo usuario registrado");
 
             const localProfiles: Array<any> = await ProfileModel.findAll({ where: { local: true }, logging: false });

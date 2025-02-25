@@ -3,7 +3,7 @@ import { sequelize } from "../config/db";
 
 export const ProfileModel = sequelize.define('Profile', {
     id: {
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         unique: true,

@@ -138,7 +138,8 @@ io.on("connection", (socket: Socket) => {
             
             const userData: any = await getUserDataById(messageData.receiverId);
             if (userData.online) {
-                socket.broadcast.emit("chat-message", messageData);
+                socket.emit("chat-message-front", messageData);
+                console.log("Enviando Mensaje al front........");
         
                 if (peers.size > 0) {
         

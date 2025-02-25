@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { FaPaperPlane } from 'react-icons/fa'
 import { io } from 'socket.io-client'
 import styles from './ChatPage.module.css'
@@ -11,6 +11,12 @@ import { NavBar } from '../../components/navbar/NavBar'
 interface Message {
     msg: string
     user: string
+}
+
+interface MessageData {
+    senderId: string
+    receiverId: string
+    message: string
 }
 
 interface ChatProfile {
@@ -30,18 +36,18 @@ export const ChatPage = () => {
     
     const [chatsProfiles, setChatsProfiles] = useState<Array<ChatProfile>>([
         // { id: '1', name: 'Alejandro', msg: 'Hola', selected: false },
-        // { id: '2', name: 'Miguel', msg: 'Hola', selected: true },
-        // { id: '3', name: 'Sara', msg: 'Hola', selected: false },
-        // { id: '4', name: 'Juán', msg: 'Hola', selected: false },
     ])
 
     const [messages, setMessages] = useState<Array<Message>>([
         // { msg: 'hola', user: 1 }, 
-        // { msg: 'hola', user: 2 },
     ])
     const [newMessage, setNewMessage] = useState('')
 
     const [selectedChat, setSelectedChat] = useState<ChatProfile | null>(null)
+
+    const selectedChatRef = useRef(selectedChat)
+    const chatsProfilesRef = useRef(chatsProfiles)
+    const messagesRef = useRef(messages)
 
     const handleSubmitMessage = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -58,13 +64,13 @@ export const ChatPage = () => {
             // const messageToInclude = { msg: newMessage, user: localStorage.getItem("userId")! }
 
             // setMessages(prev => [...prev, messageToInclude])
-            socket.emit("chat-message", { senderId: localStorage.getItem("userId")!, receiverId: selectedChat!.profileInfo.id, message: newMessage })
+            socket.emit("chat-message", { senderId: localStorage.getItem("userId")!, receiverId: selectedChat!.profileInfo.id, message: newMessage } as MessageData)
             setNewMessage('')
             // socket.emit("message", messageToInclude)
 
-            const newChatsProfile: Array<ChatProfile> = [...chatsProfiles]
-            newChatsProfile.find(chat => chat.id === selectedChat!.id)!.messages.push({ id: '', text: newMessage, profileId: localStorage.getItem("userId")! })
-            setChatsProfiles(newChatsProfile)
+            // const newChatsProfile: Array<ChatProfile> = [...chatsProfiles]
+            // newChatsProfile.find(chat => chat.id === selectedChat!.id)!.messages.push({ id: '', text: newMessage, profileId: localStorage.getItem("userId")! })
+            // setChatsProfiles(newChatsProfile)
         }
     }
 
@@ -102,6 +108,12 @@ export const ChatPage = () => {
     }, [])
 
     useEffect(() => {
+        selectedChatRef.current = selectedChat
+        chatsProfilesRef.current = chatsProfiles
+        messagesRef.current = messages
+    }, [selectedChat, chatsProfiles, messages])
+
+    useEffect(() => {
         const socketConnection = io('http://localhost:3500')
         setSocket(socketConnection)
 
@@ -112,6 +124,26 @@ export const ChatPage = () => {
             newChatsProfile.find(chat => chat.id === selectedChat!.id)!.messages.push({ id: '', text: message.msg, profileId: message.user })
             console.log(newChatsProfile);
             setChatsProfiles(newChatsProfile)
+        })
+
+        socketConnection.on("chat-message-front", (message: MessageData) => {
+            const currentSelectedChat = selectedChatRef.current
+            const currentChatProfiles = chatsProfilesRef.current
+            const newChatsProfile: Array<ChatProfile> = [...currentChatProfiles]
+            // console.log(selectedChat);
+            
+            newChatsProfile.find(chat => chat.id === currentSelectedChat!.id)!.messages.push({ id: '', text: message.message, profileId: message.senderId })
+            // console.log(newChatsProfile);
+            setChatsProfiles(newChatsProfile)
+            const selectedChatMessages: Array<Message> = []
+            currentChatProfiles.find(chat => chat.id === currentSelectedChat!.id)?.messages
+            .forEach(message => {
+                selectedChatMessages.push({ 
+                    msg: message.text, 
+                    user: message.profileId 
+                })
+            })
+            setMessages(selectedChatMessages)
         })
 
         socketConnection.on("profile-disconnected", (profileId: string) => {

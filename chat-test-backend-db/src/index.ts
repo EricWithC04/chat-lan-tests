@@ -124,7 +124,7 @@ udpSocket.on('message', (msg) => {
 
             const { type, ...rest } = node
 
-            io.emit("chat-message-receive", rest)
+            io.emit("chat-message-front", rest)
         }
     })()
 });

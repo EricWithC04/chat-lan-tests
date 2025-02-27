@@ -104,7 +104,7 @@ udpSocket.on('message', (msg) => {
         
             if (!peers.has(peerAddress) && peerAddress !== `http://${getLocalIp()}:${PORT}`) {
                 console.log(`Nodo descubierto: ${peerAddress} ID: ${nodeId}`);
-                console.log(`Datos del usuario: ${JSON.stringify(node.userData)}`);
+                // console.log(`Datos del usuario: ${JSON.stringify(node.userData)}`);
                 
                 registerLocalUser(node.userData)
                 peers.add(peerAddress);
@@ -121,6 +121,10 @@ udpSocket.on('message', (msg) => {
 
         if (node.type === "chat-message") {
             console.log(`Mensaje recibido por UDP desde ${node.senderId}: `, node.message);
+
+            const { type, ...rest } = node
+
+            io.emit("chat-message-receive", rest)
         }
     })()
 });
@@ -134,12 +138,12 @@ io.on("connection", (socket: Socket) => {
 
     socket.on("chat-message", (messageData: MessageData) => {
         (async () => {
-            console.log("Datos del mensaje: ", messageData);
+            // console.log("Datos del mensaje: ", messageData);
             
             const userData: any = await getUserDataById(messageData.receiverId);
             if (userData.online) {
                 socket.emit("chat-message-front", messageData);
-                console.log("Enviando Mensaje al front........");
+                // console.log("Enviando Mensaje al front........");
         
                 if (peers.size > 0) {
         
@@ -158,6 +162,10 @@ io.on("connection", (socket: Socket) => {
                 socket.emit("profile-disconnected", messageData.receiverId)
             }
         })()
+    })
+
+    socket.on("chat-message-receive", (messageData: MessageData) => {
+        socket.emit("chat-message-front", messageData)
     })
     
     socket.on("disconnect", () => {

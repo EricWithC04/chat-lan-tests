@@ -95,6 +95,8 @@ setInterval(() => {
 }, 5000);
 
 udpSocket.on('message', (msg) => {
+    console.log(msg.toString());
+    
     (async function() {
         const node = JSON.parse(msg.toString());
 
@@ -142,20 +144,21 @@ io.on("connection", (socket: Socket) => {
             
             const userData: any = await getUserDataById(messageData.receiverId);
             if (userData.online) {
-                socket.emit("chat-message-front", messageData);
+                // socket.emit("chat-message-front", messageData);
                 // console.log("Enviando Mensaje al front........");
         
                 if (peers.size > 0) {
         
                     const udpMessage = JSON.stringify({ ...messageData, type: "chat-message" })
                     
-                    peers.forEach((peerAddress) => {
-                        const peerIp = peerAddress.replace(/^http:\/\//, '').split(':')[0];
+                    const subnet = getLocalIp().split('.').slice(0, 2).join('.') + '.0.255'
+                    udpSocket.send(udpMessage, 0, udpMessage.length, UDP_PORT, subnet, (err) => {
+                        if (err) console.error(`Error enviando mensaje a ${"1.2.3.4"}:`, err);
+                    });
+                    // peers.forEach((peerAddress) => {
+                    //     const peerIp = peerAddress.replace(/^http:\/\//, '').split(':')[0];
         
-                        udpSocket.send(udpMessage, 0, udpMessage.length, UDP_PORT, peerIp, (err) => {
-                            if (err) console.error(`Error enviando mensaje a ${peerIp}:`, err);
-                        });
-                    })
+                    // })
         
                 }
             } else {

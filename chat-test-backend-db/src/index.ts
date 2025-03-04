@@ -20,6 +20,7 @@ import { getUserDataById } from "./utils/getUserData";
 import { registerLocalUser } from "./utils/registerLocalUser";
 import { localProfileExists } from "./utils/localProfileExists";
 import { setUserOffline } from "./utils/setUserOnline";
+import { registerNewMessage } from "./utils/registerNewMessage";
 
 interface MessageData {
     senderId: string;
@@ -95,7 +96,7 @@ setInterval(() => {
 }, 5000);
 
 udpSocket.on('message', (msg) => {
-    console.log(msg.toString());
+    // console.log(msg.toString());
     
     (async function() {
         const node = JSON.parse(msg.toString());
@@ -126,6 +127,8 @@ udpSocket.on('message', (msg) => {
 
             const { type, ...rest } = node
 
+            registerNewMessage(rest)
+
             io.emit("chat-message-front", rest)
         }
     })()
@@ -155,11 +158,6 @@ io.on("connection", (socket: Socket) => {
                     udpSocket.send(udpMessage, 0, udpMessage.length, UDP_PORT, subnet, (err) => {
                         if (err) console.error(`Error enviando mensaje a ${"1.2.3.4"}:`, err);
                     });
-                    // peers.forEach((peerAddress) => {
-                    //     const peerIp = peerAddress.replace(/^http:\/\//, '').split(':')[0];
-        
-                    // })
-        
                 }
             } else {
                 socket.emit("profile-disconnected", messageData.receiverId)

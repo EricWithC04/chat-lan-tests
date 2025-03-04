@@ -1,0 +1,33 @@
+import { MessageModel } from "../models/message.model"
+import { ProfileChatTable } from "../models/profile_chat.table"
+import { ChatModel } from "../models/chat.model"
+
+interface MessageData {
+    senderId: string
+    receiverId: string
+    message: string
+}
+
+export const registerNewMessage = async (data: MessageData) => {
+    try {
+        const allChats = await ChatModel.findAll({
+            include: ProfileChatTable
+        });
+
+        const correspondingChat: any = allChats.find((chat: any) => {
+            return chat.Profiles.every((profile: any) => profile.id === data.senderId || profile.id === data.receiverId);
+        });
+
+        if (correspondingChat) {
+            const newMessage = await MessageModel.create({
+                text: data.message,
+                profileId: data.senderId,
+                chatId: correspondingChat.id
+            });
+        } else {
+            throw new Error("Chat not found");
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}

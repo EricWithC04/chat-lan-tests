@@ -1,5 +1,6 @@
 import { MessageModel } from "../models/message.model"
-import { ProfileChatTable } from "../models/profile_chat.table"
+// import { ProfileChatTable } from "../models/profile_chat.table"
+import { ProfileModel } from "../models/profile.model"
 import { ChatModel } from "../models/chat.model"
 
 interface MessageData {
@@ -11,7 +12,7 @@ interface MessageData {
 export const registerNewMessage = async (data: MessageData) => {
     try {
         const allChats = await ChatModel.findAll({
-            include: ProfileChatTable
+            include: ProfileModel
         });
 
         const correspondingChat: any = allChats.find((chat: any) => {

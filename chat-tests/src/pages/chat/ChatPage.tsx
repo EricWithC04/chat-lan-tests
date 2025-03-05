@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { FaPaperPlane } from 'react-icons/fa'
 import { io } from 'socket.io-client'
+import { ToastContainer, toast } from 'react-toastify'
 import styles from './ChatPage.module.css'
 import exampleImage from '../../assets/profile-example.jpg'
 import { MessageElement } from '../../components/messageElement/MessageElement'
@@ -32,6 +33,8 @@ interface ChatProfile {
 }
 
 export const ChatPage = () => {
+
+    const notify = (msg: string, options?: any) => toast(msg, options)
 
     const [socket, setSocket] = useState<any>()
     
@@ -147,8 +150,9 @@ export const ChatPage = () => {
             setMessages(selectedChatMessages)
         })
 
-        socketConnection.on("profile-disconnected", (profileId: string) => {
-            alert(`El usuario no se encuentra conectado, intentalo más tarde \n ${profileId}`)
+        socketConnection.on("profile-disconnected", (_profileId: string) => {
+            // alert(`El usuario no se encuentra conectado, intentalo más tarde \n ${profileId}`)
+            notify("El usuario no se encuentra conectado, intentalo más tarde", { type: 'info' })
         })
 
         return () => {
@@ -160,6 +164,7 @@ export const ChatPage = () => {
 
     return (
         <div className={styles.container}>
+            <ToastContainer />
             <div className={styles.navbar}>
                 <NavBar />
             </div>

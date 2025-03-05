@@ -7,6 +7,7 @@ import { MessageElement } from '../../components/messageElement/MessageElement'
 import { ChatElement } from '../../components/chatElement/ChatElement'
 import { useMessages } from './hook/useMessages'
 import { NavBar } from '../../components/navbar/NavBar'
+import ChatEmptyState from '../../components/chatEmptyState/ChatEmptyState'
 
 interface Message {
     msg: string
@@ -203,7 +204,7 @@ export const ChatPage = () => {
                     </div>
                 ) : (
                     <div className={styles['chat-container']}>
-                        <p>Seleccione un chat</p>
+                        <ChatEmptyState />
                     </div>
                 )
             }

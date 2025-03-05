@@ -1,5 +1,4 @@
 import { MessageModel } from "../models/message.model"
-// import { ProfileChatTable } from "../models/profile_chat.table"
 import { ProfileModel } from "../models/profile.model"
 import { ChatModel } from "../models/chat.model"
 

@@ -18,7 +18,6 @@ import { profileChatRouter } from "./routes/profile_chat.routes";
 import { setupSocketListeners } from "./utils/setupSocketListeners";
 import { getUserDataById } from "./utils/getUserData";
 import { registerLocalUser } from "./utils/registerLocalUser";
-import { localProfileExists } from "./utils/localProfileExists";
 import { setUserOffline } from "./utils/setUserOnline";
 import { registerNewMessage } from "./utils/registerNewMessage";
 
@@ -123,13 +122,15 @@ udpSocket.on('message', (msg) => {
         }
 
         if (node.type === "chat-message") {
-            console.log(`Mensaje recibido por UDP desde ${node.senderId}: `, node.message);
-
-            const { type, ...rest } = node
-
-            registerNewMessage(rest)
-
-            io.emit("chat-message-front", rest)
+            if (node.receiverId === loggedUser) {
+                console.log(`Mensaje recibido por UDP desde ${node.senderId}: `, node.message);
+    
+                const { type, ...rest } = node
+    
+                registerNewMessage(rest)
+    
+                io.emit("chat-message-front", rest)
+            }
         }
     })()
 });

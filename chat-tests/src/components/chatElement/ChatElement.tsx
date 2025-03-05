@@ -7,10 +7,11 @@ interface ChatElementProps {
     name: string 
     msg: string
     selected: boolean
+    online: boolean
     handleSelectChat: (name: string) => void
 }
 
-export const ChatElement = ({ id, name, msg, selected, handleSelectChat }: ChatElementProps) => {
+export const ChatElement = ({ id, name, selected, online, handleSelectChat }: ChatElementProps) => {
     return (
         <div 
             className={`${styles.container} ${selected ? styles.selected : ''}`}
@@ -19,7 +20,7 @@ export const ChatElement = ({ id, name, msg, selected, handleSelectChat }: ChatE
             <img src={exampleImage} alt="foto" />
             <div className={styles.info}>
                 <h6>{name}</h6>
-                <p className={styles.message}>{msg}</p>
+                <p className={styles.message}>{online ? "🟢 Conectado" : "🔘 Desconectado"}</p>
             </div>
         </div>
     )

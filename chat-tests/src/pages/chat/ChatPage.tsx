@@ -28,6 +28,7 @@ interface ChatProfile {
         id: string
         name: string
         img: string | null
+        online: boolean
     }
     messages: Array<{ id: string, text: string, profileId: string }>
 }
@@ -175,6 +176,7 @@ export const ChatPage = () => {
                             id={chat.id}
                             name={chat.profileInfo.name} 
                             msg={chat.profileInfo.name} 
+                            online={chat.profileInfo.online}
                             selected={chat.selected} 
                             handleSelectChat={handleSelectChat}
                         />

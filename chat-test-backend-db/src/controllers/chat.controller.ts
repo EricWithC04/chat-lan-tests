@@ -18,7 +18,7 @@ export const getChats = async (req: Request, res: Response) => {
                 },
                 {
                     model: ProfileModel,
-                    attributes: [ "id", "name", "img"],
+                    attributes: [ "id", "name", "img", "online"],
                 }
             ],
             logging: false

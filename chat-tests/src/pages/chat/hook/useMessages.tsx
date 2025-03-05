@@ -4,6 +4,7 @@ interface UserProfile {
     id: string
     name: string
     img: string | null
+    online: boolean
 }
 
 interface UserMessage {
@@ -33,7 +34,8 @@ export const useMessages = async () => {
             profileInfo: {
                 id: userProfile.id,
                 name: userProfile.name,
-                img: userProfile.img
+                img: userProfile.img,
+                online: userProfile.online
             },
             messages: chat.Messages
         })})

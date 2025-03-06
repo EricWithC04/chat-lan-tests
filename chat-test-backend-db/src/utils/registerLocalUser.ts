@@ -11,7 +11,7 @@ interface UserData {
     updatedAt: string
 }
 
-export const registerLocalUser = async (userData: UserData) => {
+export const registerLocalUser = async (userData: UserData, io: any) => {
     try {
         const profileExists = await ProfileModel.findOne({ where: { id: userData.id } });
     
@@ -27,6 +27,7 @@ export const registerLocalUser = async (userData: UserData) => {
                 fields: ['id', 'name', 'img', 'local', 'online']
             });
             console.log("Nuevo usuario registrado");
+            io.emit("new-user", userData);
 
             const localProfiles: Array<any> = await ProfileModel.findAll({ where: { local: true }, logging: false });
 

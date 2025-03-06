@@ -38,6 +38,9 @@ export const ChatPage = () => {
     const notify = (msg: string, options?: any) => toast(msg, options)
 
     const [socket, setSocket] = useState<any>()
+
+    // Para actualizar el estado con los chats y los mensajes
+    const [chatsFlag, setChatsFlag] = useState(false)
     
     const [chatsProfiles, setChatsProfiles] = useState<Array<ChatProfile>>([
         // { id: '1', name: 'Alejandro', msg: 'Hola', selected: false },
@@ -110,7 +113,7 @@ export const ChatPage = () => {
             const info = await useMessages()
             setChatsProfiles(info)
         })()
-    }, [])
+    }, [chatsFlag])
 
     useEffect(() => {
         selectedChatRef.current = selectedChat
@@ -149,6 +152,15 @@ export const ChatPage = () => {
                 })
             })
             setMessages(selectedChatMessages)
+        })
+
+        socketConnection.on("new-user", (_userData: any) => {
+            notify("Se ha registrado un nuevo usuario", { type: 'info' })
+            setChatsFlag(!chatsFlag)
+        })
+
+        socketConnection.on("profile-connected", (_userData: any) => {
+            setChatsFlag(!chatsFlag)
         })
 
         socketConnection.on("profile-disconnected", (_profileId: string) => {

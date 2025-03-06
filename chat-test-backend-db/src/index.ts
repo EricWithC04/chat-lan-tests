@@ -18,8 +18,9 @@ import { profileChatRouter } from "./routes/profile_chat.routes";
 import { setupSocketListeners } from "./utils/setupSocketListeners";
 import { getUserDataById } from "./utils/getUserData";
 import { registerLocalUser } from "./utils/registerLocalUser";
-import { setUserOffline } from "./utils/setUserOnline";
+import { setUserOffline, setUserOnline } from "./utils/setUserOnline";
 import { registerNewMessage } from "./utils/registerNewMessage";
+import { localProfileExists } from "./utils/localProfileExists";
 
 interface MessageData {
     senderId: string;
@@ -108,12 +109,17 @@ udpSocket.on('message', (msg) => {
                 console.log(`Nodo descubierto: ${peerAddress} ID: ${nodeId}`);
                 // console.log(`Datos del usuario: ${JSON.stringify(node.userData)}`);
                 
-                registerLocalUser(node.userData)
+                registerLocalUser(node.userData, io)
                 peers.add(peerAddress);
         
                 // Intentar conectarse al nodo descubierto
                 const socket = ioClient(peerAddress);
                 setupSocketListeners(peers, io, socket);
+            } else if (await localProfileExists(nodeId)) {
+                setUserOnline(nodeId)
+                io.emit("profile-connected", node.userData);
+            } else {
+                registerLocalUser(node.userData, io)
             }
         }
 

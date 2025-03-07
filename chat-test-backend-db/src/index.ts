@@ -61,7 +61,7 @@ app.post("/login/:idUser", (req: Request, res: Response) => {
 })
 app.post("/logout", (_req: Request, res: Response) => {
     try {
-        const message = JSON.stringify({ idUser: loggedUser, type: "user-disconnected" });
+        const message = JSON.stringify({ idUser: loggedUser, type: "user-disconnected", ip: getLocalIp() });
         
         const subnet = getLocalIp().split('.').slice(0, 2).join('.') + '.0.255'
         udpSocket.send(message, 0, message.length, UDP_PORT, subnet, (err) => {
@@ -125,6 +125,7 @@ udpSocket.on('message', (msg) => {
 
         if (node.type === "user-disconnected") {
             setUserOffline(node.idUser)
+            peers.delete(node.ip)
         }
 
         if (node.type === "chat-message") {

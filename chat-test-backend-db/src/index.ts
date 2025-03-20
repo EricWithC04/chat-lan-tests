@@ -115,7 +115,7 @@ udpSocket.on('message', (msg) => {
                 // Intentar conectarse al nodo descubierto
                 const socket = ioClient(peerAddress);
                 setupSocketListeners(peers, io, socket);
-            } else if (await localProfileExists(nodeId)) {
+            } else if (await localProfileExists(nodeId) && (nodeId !== loggedUser)) {
                 setUserOnline(nodeId)
                 io.emit("profile-connected", node.userData);
             } else {
@@ -125,6 +125,7 @@ udpSocket.on('message', (msg) => {
 
         if (node.type === "user-disconnected") {
             setUserOffline(node.idUser)
+            io.emit("profile-connected", node.idUser);
             peers.delete(node.ip)
         }
 

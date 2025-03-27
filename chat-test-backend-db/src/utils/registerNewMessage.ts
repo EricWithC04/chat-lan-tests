@@ -19,7 +19,7 @@ export const registerNewMessage = async (data: MessageData) => {
         });
 
         if (correspondingChat) {
-            const newMessage = await MessageModel.create({
+            await MessageModel.create({
                 text: data.message,
                 profileId: data.senderId,
                 chatId: correspondingChat.id

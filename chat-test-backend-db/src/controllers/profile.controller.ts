@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ProfileModel } from "../models/profile.model";
+import { ProfileChatTable } from "../models/profile_chat.table";
 import { assignProfiles } from "./profile_chat.controller";
 import { ChatModel } from "../models/chat.model";
 
@@ -66,8 +67,8 @@ export const createProfiles = async (req: Request, res: Response) => {
 
         restOfProfiles.forEach(async (profile: any) => {
             const newChat: any = await ChatModel.create()
-            await ChatModel.create({ userId: newProfile.id, chatId: newChat.id }, { logging: false })
-            await ChatModel.create({ userId: profile.id, chatId: newChat.id }, { logging: false })
+            await ProfileChatTable.create({ userId: newProfile.id, chatId: newChat.id }, { logging: false })
+            await ProfileChatTable.create({ userId: profile.id, chatId: newChat.id }, { logging: false })
         })
 
         res.status(201).json(newProfile);

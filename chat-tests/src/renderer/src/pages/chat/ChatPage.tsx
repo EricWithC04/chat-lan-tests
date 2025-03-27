@@ -159,8 +159,30 @@ export const ChatPage = () => {
             setChatsFlag(!chatsFlag)
         })
 
-        socketConnection.on("profile-connected", (_userData: any) => {
-            setChatsFlag(!chatsFlag)
+        socketConnection.on("profile-connected", (userId: string) => {
+            const newChatsProfile: Array<ChatProfile> = chatsProfilesRef.current.map(chat => {
+                if (chat.profileInfo.id === userId) {
+                    if (!chat.profileInfo.online) {
+                        return { ...chat, profileInfo: { ...chat.profileInfo, online: true } }
+                    } else {
+                        return chat
+                    }
+                } else {
+                    return chat
+                }
+            })
+            setChatsProfiles(newChatsProfile)
+        })
+
+        socketConnection.on("profile-disconnect", (userId: string) => {
+            const newChatsProfile: Array<ChatProfile> = chatsProfilesRef.current.map(chat => {
+                if (chat.profileInfo.id === userId) {
+                    return { ...chat, profileInfo: { ...chat.profileInfo, online: false } }
+                } else {
+                    return chat
+                }
+            })
+            setChatsProfiles(newChatsProfile)
         })
 
         socketConnection.on("profile-disconnected", (_profileId: string) => {

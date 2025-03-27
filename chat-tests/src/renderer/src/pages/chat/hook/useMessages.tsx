@@ -26,18 +26,22 @@ export const useMessages = async () => {
         .then(res => res.json())
         // .then(res => {console.log(res); return res})
         .catch(err => console.log(err))
-    chatsWithMessages.forEach((chat: any) => {
-        const userProfile = chat.Profiles.find((profile: any) => profile.id !== localStorage.getItem("userId"))
-        chats.push({
-            id: chat.id,
-            selected: false,
-            profileInfo: {
-                id: userProfile.id,
-                name: userProfile.name,
-                img: userProfile.img,
-                online: userProfile.online
-            },
-            messages: chat.Messages
-        })})
+    
+    if (typeof chatsWithMessages !== 'string') {
+        chatsWithMessages.forEach((chat: any) => {
+            const userProfile = chat.Profiles.find((profile: any) => profile.id !== localStorage.getItem("userId"))
+            chats.push({
+                id: chat.id,
+                selected: false,
+                profileInfo: {
+                    id: userProfile.id,
+                    name: userProfile.name,
+                    img: userProfile.img,
+                    online: userProfile.online
+                },
+                messages: chat.Messages
+            })
+        })
+    }
     return chats
 }
